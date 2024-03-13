@@ -10,41 +10,44 @@ import css from "../assets/css3.jpg";
 import html from "../assets/html5.webp";
 import js from "../assets/javascript.jpg";
 import react from "../assets/react.png";
+import cv from "../assets/German_Astudillo_CV.pdf"
 import Card from "../components/Card.astro";
 ---
 
 <Layout title="Germán Astudillo">
-  <div class="mt-10 flex flex-row ml-96 p-10">
-    <div class="w-1/3">
-      <h1 class="text-5xl text-slate-700">¡Bienvenid@ a mi Portfolio!</h1>
-      <br />
-      <p class="text-3xl text-slate-700">Soy Germán Astudillo.</p>
-      <p class="text-2xl text-slate-500">Desarrollador Fullstack</p>
-      <br />
-      <p class="text-xl text-slate-700">
-        Actualmente me estoy enfocando en mejorar mis habilidades y capacidades,
-        soy una persona que constantemente está aprendiendo. Ya que al igual que
-        un día sin reir, un día sin aprender es un día perdido.
-      </p>
-      <br />
-      <p class="text-xl text-slate-700">
-        Desarrollo aplicaciones y páginas web dinámicas utilizando diferentes
-        tecnologías como Python, Javascript, bases de datos relacionales y bases
-        de datos NoSQL.
-      </p>
-      <br />
-      <a
-        class="text-xl bg-slate-500 h-10 p-4 rounded-md text-slate-50 hover:bg-slate-700 transition duration-200 ease-in"
-        href="/assets/Germán_Astudillo_CV.pdf"
-        download="Germán_Astudillo_CV.pdf">Descargar CV</a
-      >
-    </div>
+<div class="mt-10 flex flex-col lg:flex-row lg:ml-96 lg:p-10 md:ml-0 sm:ml-0 sm-p-10">
+  <div class="w-full lg:w-1/3">
+    <h1 class="text-5xl text-slate-700">¡Bienvenid@ a mi Portfolio!</h1>
+    <br />
+    <p class="text-3xl text-slate-700">Soy Germán Astudillo.</p>
+    <p class="text-2xl text-slate-500">Desarrollador Fullstack</p>
+    <br />
+    <p class="text-xl text-slate-700">
+      Actualmente me estoy enfocando en mejorar mis habilidades y capacidades,
+      soy una persona que constantemente está aprendiendo. Ya que al igual que
+      un día sin reir, un día sin aprender es un día perdido.
+    </p>
+    <br />
+    <p class="text-xl text-slate-700">
+      Desarrollo aplicaciones y páginas web dinámicas utilizando diferentes
+      tecnologías como Python, Javascript, bases de datos relacionales y bases
+      de datos NoSQL.
+    </p>
+    <br />
+    <a
+      class="text-xl bg-slate-500 h-10 p-4 rounded-md hover:bg-slate-400 transition duration-200 ease-in"
+      href={cv}
+      download="German_Astudillo_CV.pdf">Descargar CV</a
+    >
+  </div>
+  <div class="w-full lg:w-1/3 flex justify-center">
     <Image
       src={dev}
-      class="w-1/3 transition-hover duration-200 hover:bg-slate-300 rounded-full"
+      class="lg:w-[400px] md:w-1/2 sm:w-1/3 transition-hover duration-200 rounded-full lg:block md:block sm:hidden"
       alt="developer-image"
     />
   </div>
+</div>
   <div id="skills" class="mt-10 flex flex-col p-10 m-10">
     <div class="flex items-center justify-center">
       <h3 class="text-4xl text-slate-700 mr-2">
@@ -110,34 +113,34 @@ import Card from "../components/Card.astro";
     <br />
     <div class="flex flex-row flex-wrap justify-between mt-10">
       <Card
-        link="https://flask.palletsprojects.com/en/3.0.x/"
+        link="https://developer.mozilla.org/es/docs/Web/HTML"
         img={html}
         desc="Flask es un microframework web ligero y flexible para Python que facilita la creación rápida de aplicaciones web. Aunque es minimalista, Flask proporciona las herramientas necesarias para construir aplicaciones web sólidas y escalables. Su diseño modular permite a los desarrolladores agregar solo las funcionalidades que necesitan, lo que resulta en una mayor flexibilidad y un código más limpio."
-        name="Flask"
+        name="HTML5"
       />
 
       <Card
-        link="https://www.djangoproject.com/"
+        link="https://developer.mozilla.org/es/docs/Web/CSS"
         img={css}
         desc="Django es un framework web de alto nivel y de código abierto construido en Python que facilita el desarrollo rápido y seguro de aplicaciones web complejas. Ofrece una arquitectura MVC (Modelo-Vista-Controlador) que promueve una separación clara entre la lógica de negocio y la presentación de datos."
-        name="Django"
+        name="CSS3"
       />
       <Card
-        link="https://www.python.org/"
+        link="https://developer.mozilla.org/es/docs/Web/JavaScript"
         img={js}
         desc="FastAPI es un moderno y eficiente framework de Python para construir APIs web, que ofrece un alto rendimiento gracias a su integración con Starlette y Pydantic, facilitando la creación de APIs rápidas y fáciles de usar mediante la definición declarativa de rutas y modelos de datos, generando automáticamente una documentación interactiva basada en OpenAPI y Swagger UIa"
-        name="Fast API"
+        name="Javascript (ES6+)"
       />
       <Card
-        link="https://www.python.org/"
+        link="https://es.react.dev/"
         img={react}
         desc="Express es un framework web minimalista y flexible para Node.js que simplifica el desarrollo de aplicaciones web y APIs. Diseñado para ser rápido y eficiente, Express ofrece una amplia gama de funciones y características, incluyendo enrutamiento sencillo y modular."
-        name="Express"
+        name="ReactJS"
       />
     </div>
 
 
-<div id="skills" class="mt-10 flex flex-col p-10 m-10 ">
+<div id="skills" class="mt-10 flex flex-col ">
     <div class="flex items-center justify-center">
       <h3 class="text-4xl text-slate-700 mr-2">
         Proyectos que he desarrollado

@@ -10,9 +10,13 @@ const { link, img, desc, name } = Astro.props
 
 ---
 
-<div class="max-w-sm w-80 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 hover:scale-110 transition duration-200"> 
-<a href={link} target="_blank">
+<a href={link} class="hover:scale-110 transition duration-300 ">
+<div class="max-w-sm w-80 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"> 
         <Image class="h-40" src={img} alt={name} />
 
-</a>
+    <div class="p-5 bg-slate-500">
+            <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-50 ">{name}</h5>
+    </div>
 </div>
+
+</a>
