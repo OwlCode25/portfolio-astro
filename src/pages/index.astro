@@ -34,7 +34,7 @@ import Card from "../components/Card.astro";
       </p>
       <br />
       <a
-        class="text-xl bg-slate-500 h-10 p-4 rounded-md"
+        class="text-xl bg-slate-500 h-10 p-4 rounded-md text-slate-50 hover:bg-slate-700 transition duration-200 ease-in"
         href="/assets/Germán_Astudillo_CV.pdf"
         download="Germán_Astudillo_CV.pdf">Descargar CV</a
       >
@@ -47,7 +47,7 @@ import Card from "../components/Card.astro";
   </div>
   <div id="skills" class="mt-10 flex flex-col p-10 m-10">
     <div class="flex items-center justify-center">
-      <h3 class="text-5xl text-slate-700 mr-2">
+      <h3 class="text-4xl text-slate-700 mr-2">
         Mis habilidades en el Backend
       </h3>
       <svg
@@ -97,8 +97,50 @@ import Card from "../components/Card.astro";
   </div>
 <div id="skills" class="mt-10 flex flex-col p-10 m-10 ">
     <div class="flex items-center justify-center">
-      <h3 class="text-5xl text-slate-700 mr-2">
+      <h3 class="text-4xl text-slate-700 mr-2">
         Mis habilidades en el Frontend
+      </h3>
+    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-pencil-star" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#334155" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M17.5 10.5l1 -1a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4h4l2 -2" />
+  <path d="M13.5 6.5l4 4" />
+  <path d="M17.8 20.817l-2.172 1.138a.392 .392 0 0 1 -.568 -.41l.415 -2.411l-1.757 -1.707a.389 .389 0 0 1 .217 -.665l2.428 -.352l1.086 -2.193a.392 .392 0 0 1 .702 0l1.086 2.193l2.428 .352a.39 .39 0 0 1 .217 .665l-1.757 1.707l.414 2.41a.39 .39 0 0 1 -.567 .411l-2.172 -1.138z" />
+</svg>
+    </div>
+    <br />
+    <div class="flex flex-row flex-wrap justify-between mt-10">
+      <Card
+        link="https://flask.palletsprojects.com/en/3.0.x/"
+        img={html}
+        desc="Flask es un microframework web ligero y flexible para Python que facilita la creación rápida de aplicaciones web. Aunque es minimalista, Flask proporciona las herramientas necesarias para construir aplicaciones web sólidas y escalables. Su diseño modular permite a los desarrolladores agregar solo las funcionalidades que necesitan, lo que resulta en una mayor flexibilidad y un código más limpio."
+        name="Flask"
+      />
+
+      <Card
+        link="https://www.djangoproject.com/"
+        img={css}
+        desc="Django es un framework web de alto nivel y de código abierto construido en Python que facilita el desarrollo rápido y seguro de aplicaciones web complejas. Ofrece una arquitectura MVC (Modelo-Vista-Controlador) que promueve una separación clara entre la lógica de negocio y la presentación de datos."
+        name="Django"
+      />
+      <Card
+        link="https://www.python.org/"
+        img={js}
+        desc="FastAPI es un moderno y eficiente framework de Python para construir APIs web, que ofrece un alto rendimiento gracias a su integración con Starlette y Pydantic, facilitando la creación de APIs rápidas y fáciles de usar mediante la definición declarativa de rutas y modelos de datos, generando automáticamente una documentación interactiva basada en OpenAPI y Swagger UIa"
+        name="Fast API"
+      />
+      <Card
+        link="https://www.python.org/"
+        img={react}
+        desc="Express es un framework web minimalista y flexible para Node.js que simplifica el desarrollo de aplicaciones web y APIs. Diseñado para ser rápido y eficiente, Express ofrece una amplia gama de funciones y características, incluyendo enrutamiento sencillo y modular."
+        name="Express"
+      />
+    </div>
+
+
+<div id="skills" class="mt-10 flex flex-col p-10 m-10 ">
+    <div class="flex items-center justify-center">
+      <h3 class="text-4xl text-slate-700 mr-2">
+        Proyectos que he desarrollado
       </h3>
     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-pencil-star" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#334155" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
