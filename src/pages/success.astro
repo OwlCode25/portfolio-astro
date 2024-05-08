@@ -1,0 +1,16 @@
+---
+import ContactLayout from "../layouts/ContactLayout.astro";
+import img from "../assets/email-sent.png"
+import Image from "astro/components/Image.astro";
+---
+
+<ContactLayout title="Mensaje enviado! - ShtoCode">
+
+<div class="mx-auto mt-16 mb-20 flex flex-col items-center">
+<h3 class="text-xl uppercase text-white text-center font-bold">¡Tú mensaje fue enviado con exito!</h3>
+<br />
+<h3 class="text-lg uppercase text-white text-center font-bold">No tardaré en responderte, muchas gracias por contactarme:]</h3>
+<Image src={img} alt="email-enviado" class="rounded-3xl bg-blue-500 mt-10 "/>
+</div>
+
+</ContactLayout>

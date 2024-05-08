@@ -3,7 +3,7 @@ import { Image } from 'astro:assets'
 interface Props {
     link: string
     img: any
-    desc: string
+    desc?: string
     name: string
 }
 const { link, img, desc, name } = Astro.props

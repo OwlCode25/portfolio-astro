@@ -1,0 +1,57 @@
+<div id="work" class="mt-10 flex justify-center">
+  <div class="flex flex-col items-center">
+    <div class="flex items-center mb-4">
+      <h3 class="text-3xl text-slate-700">
+        Experiencia
+      </h3>
+      <svg xmlns="http://www.w3.org/2000/svg" class="ml-3 w-10 h-10" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+        <path d="M3 7m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" />
+        <path d="M8 7v-2a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v2" />
+        <path d="M12 12l0 .01" />
+        <path d="M3 13a20 20 0 0 0 18 0" />
+      </svg>
+    </div>
+    <div class="flex flex-col lg:flex-row items-start mt-10 relative px-16">
+      <ul id="experience-list">
+        <li class="text-slate-600 font-medium list-disc">Expert Choice</li>
+        <li class="mb-4 text-slate-500 ml-6 mt-2">Marzo 2024</li>
+        <li class="mb-4 text-slate-600 ml-6">Durante mi breve estancia en la empresa, me dediqué al análisis de los sistemas internos, centrándome especialmente en los portales propiedad de la empresa. Llevé a cabo diversas pruebas de funcionalidad, calidad, diseño y otros aspectos, con el objetivo de desarrollar un portal que pueda ser replicado para servir a un mayor número de clientes.</li>
+        <li class="text-slate-600 font-medium list-disc">Ilustre Municipalidad de Maipú</li>
+        <li class="mb-4 text-slate-500 ml-6 mt-2">Junio 2023 - Febrero 2024</li>
+        <li class="text-slate-600 ml-6">Durante este periodo, me concentré en el desarrollo de aplicaciones web, abordando tanto proyectos monolíticos como aquellos basados en arquitecturas REST. Mi participación fue integral en todas las etapas del ciclo de desarrollo, desde la conceptualización hasta la implementación final. En particular, desarrollé aplicaciones para automatizar tareas en las Direcciones, empleando y evaluando modelos de inteligencia artificial como ChatGPT, Mixtral y LLAMA 2. Para llevar a cabo estas labores, hice uso de una amplia gama de herramientas tecnológicas, tales como servidores web como IIS y Nginx, así como plataformas como Linux y Windows Server. Asimismo, trabajé con frameworks como Flask y .NET, y bases de datos como SQL Server, con el objetivo de asegurar el óptimo funcionamiento y la seguridad de las aplicaciones desarrolladas.</li>
+      </ul>
+      <div id="line" class="absolute border-r border-slate-500 h-full top-0"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function drawLines() {
+    const experienceList = document.getElementById('experience-list');
+    const points = experienceList.querySelectorAll('li.list-disc');
+    const line = document.getElementById('line');
+
+    if (points.length < 2) {
+      line.style.display = 'none';
+      return;
+    }
+
+    const firstPoint = points[0] as HTMLElement;
+    const lastPoint = points[points.length - 1] as HTMLElement;
+    const firstPointTop = firstPoint.offsetTop + firstPoint.offsetHeight / 2;
+    const lastPointTop = lastPoint.offsetTop + lastPoint.offsetHeight / 2;
+    const lineHeight = lastPointTop - firstPointTop;
+
+    line.style.top = `${firstPointTop}px`;
+    line.style.height = `${lineHeight}px`;
+    
+    const containerLeftOffset = experienceList.offsetLeft;
+    const lineLeftOffset = 15; 
+    line.style.left = `${containerLeftOffset - lineLeftOffset}px`;
+  }
+
+  drawLines();
+
+  window.addEventListener('resize', drawLines);
+</script>

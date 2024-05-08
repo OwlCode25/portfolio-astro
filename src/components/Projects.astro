@@ -1,0 +1,148 @@
+---
+import Project from "./Project.astro";
+---
+
+<div id="projects" class="mt-10 flex flex-col bg-slate-600 animate-expand-vertically">
+  <div class="flex items-center justify-center mt-6">
+    <h3 class="text-3xl text-white mr-2">Un poco de mi trabajo</h3>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="44"
+      height="44"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="#ffffff"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      class="icon icon-tabler icons-tabler-outline icon-tabler-git-pull-request"
+      ><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path
+        d="M6 18m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path><path
+        d="M6 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path><path
+        d="M18 18m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path><path d="M6 8l0 8"
+      ></path><path d="M11 6h5a2 2 0 0 1 2 2v8"></path><path
+        d="M14 9l-3 -3l3 -3"></path></svg
+    >
+  </div>
+  <br />
+  <div
+    class="grid mb-8 border rounded-lg shadow-sm border-gray-700 md:mb-12 md:grid-cols-2 bg-slate-600"
+  >
+    <Project
+      name="SIM Maipú"
+      desc="Esta aplicación web fue desarrollada junto al equipo de desarrollo de DITEC con el fin mostrar todos los tipos de trámites que realiza el municipio, la aplicación contempla una versión cerrada en donde solo las personas designadas de cada Dirección tienen acceso a añadir nuevos trámites"
+      images={[
+        {
+          src: "https://user-images.githubusercontent.com/25181517/183898054-b3d693d4-dafb-4808-a509-bab54cf5de34.png",
+          alt: "Bootstrap",
+          lgName: "Bootstrap",
+        },
+        {
+          src: "https://user-images.githubusercontent.com/25181517/121405754-b4f48f80-c95d-11eb-8893-fc325bde617f.png",
+          alt: ".NET",
+          lgName: ".NET",
+        },
+        {
+          src: "https://github.com/marwin1991/profile-technology-icons/assets/19180175/3b371807-db7c-45b4-8720-c0cfc901680a",
+          alt: "SQL Server",
+          lgName: "SQL Server",
+        },
+        {
+          src: "https://user-images.githubusercontent.com/25181517/117447155-6a868a00-af3d-11eb-9cfe-245df15c9f3f.png",
+          alt: "Javascript",
+          lgName: "Javascript",
+        },
+      ]}
+      url="https://sim.municipalidadmaipu.cl/simvec/GuiaTramites.aspx"
+    />
+
+    <Project
+      name="Generador de decretos"
+      desc="Esta aplicación fue desarrollada con el fin de optimizar el tiempo de creación de un documento que realiza una Dirección del municipio. La aplicación necesita un archivo y parametros de un formulario como entrada, utiilizando herramientas de extracción de archivos PDF tales como Regex, PyPDF2 y PDFPlumber para luego generar una plantilla del archivo en formato docx utilizando la api de OpenAI. Además posee una integración con sharepoint para almacenar los documentos manipulados y creados."
+      images={[
+        {
+          src: "https://user-images.githubusercontent.com/25181517/183423775-2276e25d-d43d-4e58-890b-edbc88e915f7.png",
+          alt: "Flask",
+          lgName: "Flask",
+        },
+        {
+          src: "https://user-images.githubusercontent.com/25181517/183423507-c056a6f9-1ba8-4312-a350-19bcbc5a8697.png",
+          alt: "Python",
+          lgName: "Python",
+        },
+        {
+          src: "https://user-images.githubusercontent.com/25181517/183345125-9a7cd2e6-6ad6-436f-8490-44c903bef84c.png",
+          alt: "Nginx",
+          lgName: "Nginx",
+        },
+        {
+          src: "https://github.com/marwin1991/profile-technology-icons/assets/76662862/2481dc48-be6b-4ebb-9e8c-3b957efe69fa",
+          alt: "Debian Server",
+          lgName: "Debian Server",
+        },
+      ]}
+      url="https://github.com/ShtoCode/Generador-decretos"
+    />
+
+    <Project
+      name="Control de inventario"
+      desc="Solución desarrollada para pequeñas y medianas empresas de construcción para que puedan controlar el inventario de sus productos, actualmente no está terminada pero sí lleva un gran avance. La aplicación tendrá una mejora continua prometiendo a los clientes nuevos metodos y procesos para gestionar el inventario de su equipo."
+      images={[
+        {
+          src: "https://user-images.githubusercontent.com/25181517/183423775-2276e25d-d43d-4e58-890b-edbc88e915f7.png",
+          alt: "Flask",
+          lgName: "Flask",
+        },
+        {
+          src: "https://user-images.githubusercontent.com/25181517/183423507-c056a6f9-1ba8-4312-a350-19bcbc5a8697.png",
+          alt: "Python",
+          lgName: "Python",
+        },
+        {
+          src: "https://user-images.githubusercontent.com/25181517/117208740-bfb78400-adf5-11eb-97bb-09072b6bedfc.png",
+          alt: "PostgreSQL",
+          lgName: "PostgreSQL",
+        },
+        {
+          src: "https://user-images.githubusercontent.com/25181517/202896760-337261ed-ee92-4979-84c4-d4b829c7355d.png",
+          alt: "Tailwind",
+          lgName: "TailwindCSS",
+        },
+      ]}
+      url="https://github.com/ShtoCode/inventory_control"
+    />
+
+    <Project
+      name="Visor de acciones"
+      desc="Aplicación para visualizar las acciones historicas de las empresas en el mundo, utilizando la API de Polygon y una API propia que controla la autenticación de los usuarios a través de Json Web Tokens."
+      images={[
+        {
+          src: "https://user-images.githubusercontent.com/25181517/183423775-2276e25d-d43d-4e58-890b-edbc88e915f7.png",
+          alt: "Flask",
+          lgName: "Flask",
+        },
+        {
+          src: "https://user-images.githubusercontent.com/25181517/117208740-bfb78400-adf5-11eb-97bb-09072b6bedfc.png",
+          alt: "PostgreSQL",
+          lgName: "PostgreSQL",
+        },
+        {
+          src: "https://user-images.githubusercontent.com/25181517/183897015-94a058a6-b86e-4e42-a37f-bf92061753e5.png",
+          alt: "React",
+          lgName: "React",
+        },
+        {
+          src: "https://github-production-user-asset-6210df.s3.amazonaws.com/62091613/261395532-b40892ef-efb8-4b0e-a6b5-d1cfc2f3fc35.png",
+          alt: "React",
+          lgName: "React",
+        },
+        {
+          src: "https://user-images.githubusercontent.com/25181517/202896760-337261ed-ee92-4979-84c4-d4b829c7355d.png",
+          alt: "Tailwind",
+          lgName: "TailwindCSS",
+        },
+      ]}
+      url="https://github.com/ShtoCode/react-jwt-poligon"
+    />
+  </div>
+</div>

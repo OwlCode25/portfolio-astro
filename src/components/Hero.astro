@@ -1,0 +1,53 @@
+  ---
+import { Image } from "astro:assets";
+import dev from "../assets/developer.png";
+
+import cv from "../assets/German_Astudillo_CV.pdf";
+  ---
+  
+  
+  
+  <div
+    class="mt-10 flex flex-col lg:flex-row lg:ml-96 lg:p-10 md:ml-0 sm:ml-0 sm-p-10 px-4 animate-expand-vertically"
+  >
+    <div class="w-full lg:w-1/3">
+      <h1 class="text-3xl text-center text-slate-700 font-semibold">
+        ¡Bienvenid@ a mi Portfolio! 👻
+      </h1>
+      <br />
+      <br />
+      <p class="text-3xl text-slate-700">Soy Germán Astudillo.</p>
+      <p class="text-2xl text-slate-600">Desarrollador Fullstack</p>
+      <br />
+      <p class="text-lg text-slate-700">
+        Actualmente me estoy enfocando en mejorar mis habilidades y capacidades,
+        soy una persona que constantemente está aprendiendo. Ya que al igual que
+        un día sin reir, un día sin aprender es un día perdido.
+      </p>
+      <br />
+      <p class="text-lg text-slate-700">
+        Desarrollo aplicaciones y páginas web dinámicas utilizando diferentes
+        tecnologías como Python, Javascript, bases de datos relacionales y bases
+        de datos NoSQL.
+      </p>
+      <br />
+      <a
+        class="lg:text-lg md:text-lg sm:text-sm  bg-slate-500 h-10 p-4 rounded-md hover:bg-slate-400 transition duration-200 ease-in"
+        href={cv}
+        download="German_Astudillo_CV.pdf">Descarga mi CV</a
+      >
+
+      <a
+        class="lg:text-lg md:text-lg sm:text-sm bg-slate-500 h-10 p-4 rounded-md hover:bg-slate-400 transition duration-200 ease-in"
+        href="/contact">Enviame un mensaje
+        </a
+      >
+    </div>
+    <div class="w-full lg:w-1/3 flex justify-center">
+      <Image
+        src={dev}
+        class="lg:w-[400px] md:w-1/2 sm:w-1/3 transition-hover duration-200 rounded-full lg:block md:block sm:hidden"
+        alt="developer-image"
+      />
+    </div>
+  </div>

@@ -1,0 +1,58 @@
+ ---
+import flask from "../assets/flask-horizontal.webp";
+import django from "../assets/django-logo.png";
+import fastapi from "../assets/fastapi.png";
+import express from "../assets/express.jpg";
+import Card from "../components/Card.astro";
+ ---
+ 
+ <div id="skills" class="mt-10 flex flex-col m-8">
+    <div class="flex items-center justify-center">
+      <h3 class="text-3xl text-slate-700 mr-2">
+        Backend / API
+      </h3>
+      <svg
+        width="44"
+        height="44"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="#334155"
+        fill="none"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+        <path d="M7 8l-4 4l4 4"></path>
+        <path d="M17 8l4 4l-4 4"></path>
+        <path d="M14 4l-4 16"></path>
+      </svg>
+    </div>
+    <br />
+    <div class="flex flex-row flex-wrap justify-between mt-10 gap-20">
+      <Card
+        link="https://flask.palletsprojects.com/en/3.0.x/"
+        img={flask}
+        desc="Flask es un microframework web ligero y flexible para Python que facilita la creación rápida de aplicaciones web. Aunque es minimalista, Flask proporciona las herramientas necesarias para construir aplicaciones web sólidas y escalables. Su diseño modular permite a los desarrolladores agregar solo las funcionalidades que necesitan, lo que resulta en una mayor flexibilidad y un código más limpio."
+        name="Flask"
+      />
+
+      <Card
+        link="https://www.djangoproject.com/"
+        img={django}
+        desc="Django es un framework web de alto nivel y de código abierto construido en Python que facilita el desarrollo rápido y seguro de aplicaciones web complejas. Ofrece una arquitectura MVC (Modelo-Vista-Controlador) que promueve una separación clara entre la lógica de negocio y la presentación de datos."
+        name="Django"
+      />
+      <Card
+        link="https://www.python.org/"
+        img={fastapi}
+        desc="FastAPI es un moderno y eficiente framework de Python para construir APIs web, que ofrece un alto rendimiento gracias a su integración con Starlette y Pydantic, facilitando la creación de APIs rápidas y fáciles de usar mediante la definición declarativa de rutas y modelos de datos, generando automáticamente una documentación interactiva basada en OpenAPI y Swagger UIa"
+        name="Fast API"
+      />
+      <Card
+        link="https://www.python.org/"
+        img={express}
+        desc="Express es un framework web minimalista y flexible para Node.js que simplifica el desarrollo de aplicaciones web y APIs. Diseñado para ser rápido y eficiente, Express ofrece una amplia gama de funciones y características, incluyendo enrutamiento sencillo y modular."
+        name="Express"
+      />
+    </div>
+  </div>

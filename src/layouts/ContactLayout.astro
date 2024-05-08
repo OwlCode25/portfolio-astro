@@ -1,33 +1,32 @@
 ---
-import Footer from '../components/Footer.astro';
-import Header from '../components/Header.astro';
-
 interface Props {
 	title: string;
 }
 
+
+import NavContact from '../components/NavContact.astro';
+
 const { title } = Astro.props;
+
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
-		<meta charset="UTF-8" />
 		<meta name="description" content="Astro description" />
+		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Madimi+One&family=Oswald:wght@200..700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Rubik:ital,wght@0,300..900;1,300..900&family=Truculenta:opsz,wght@12..72,100..900&display=swap" rel="stylesheet">
-
-		<title>{title} - Dev</title>
+		<title>{title}</title>
 	</head>
 	<body>
-		<main>
-			<Header />
+		<main class="animate-delay-300 animate-blurred-fade-in">
+			<NavContact />
 			<slot />
-			<Footer />
 		</main>
 
 <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.js"></script>
@@ -37,7 +36,7 @@ const { title } = Astro.props;
 
 	html {
 		font-family: "Rubik", sans-serif;
-		background: #cad5d6;
+		background: #526782;
 		background-size: 224px;
 		color-scheme: light dark;
 	}
