@@ -80,3 +80,28 @@
   </div>
   </div>
 </nav>
+
+
+    <script>
+        function scrollToSection(event) {
+            event.preventDefault();
+
+            const targetId = this.getAttribute("href");
+            const targetElement = document.querySelector(targetId);
+
+            if (targetElement) {
+                const offsetTop = targetElement.offsetTop;
+
+                window.scrollTo({
+                    top: offsetTop,
+                    behavior: "smooth"
+                });
+            }
+        }
+
+        const links = document.querySelectorAll('a[href^="#"]');
+
+        links.forEach(link => {
+            link.addEventListener('click', scrollToSection);
+        });
+    </script>
