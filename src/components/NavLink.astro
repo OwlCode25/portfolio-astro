@@ -1,0 +1,22 @@
+---
+// NavLink.astro - Componente para los enlaces individuales
+export interface Props {
+  href: string;
+  icon: string;
+  isContactLink?: boolean;
+  text: string;
+}
+
+const { href, icon, isContactLink = false, text } = Astro.props;
+---
+
+<li>
+  <a 
+    class="transition duration-300 hover:text-neutral-light hover:bg-blue-navy text-neutral-white hover:rounded-lg rounded-md p-2 flex items-center" 
+    href={href}
+    data-contact={isContactLink ? 'true' : 'false'}
+  >
+    <span set:html={icon} />
+    {text}
+  </a>
+</li>

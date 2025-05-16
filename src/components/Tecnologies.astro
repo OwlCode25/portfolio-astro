@@ -1,0 +1,487 @@
+---
+// TechSkills.astro
+import { Image } from "astro:assets";
+
+// Frontend
+import css from "../assets/css3.jpg";
+import html from "../assets/html5.webp";
+import js from "../assets/javascript.jpg";
+import react from "../assets/react.png";
+
+// Backend
+import flask from "../assets/flask-horizontal.webp";
+import django from "../assets/django-logo.png";
+import fastapi from "../assets/fastapi.png";
+import express from "../assets/express.jpg";
+
+// Herramientas adicionales - Asegúrate de tener estas imágenes en tu directorio de assets
+// o reemplázalas con las rutas correctas a tus imágenes
+import neovim from "../assets/neovim.png";
+import tmux from "../assets/tmux.png";
+import docker from "../assets/docker.png";
+import git from "../assets/git.png";
+import postgres from "../assets/postgres.png";
+import archlinux from "../assets/archlinux.png";
+import alacritty from "../assets/alacritty.png";
+import ulauncher from "../assets/ulauncher.svg";
+
+
+// Interfaz para las tecnologías
+interface Tech {
+  name: string;
+  image: ImageMetadata;
+  link: string;
+  description?: string;
+  category: "frontend" | "backend" | "devtools" | "database" | "os";
+}
+
+// Definición de todas las tecnologías
+const technologies: Tech[] = [
+  // Frontend
+  {
+    name: "HTML5",
+    image: html,
+    link: "https://developer.mozilla.org/es/docs/Web/HTML",
+    description: "Lenguaje de marcado estándar para páginas web.",
+    category: "frontend"
+  },
+  {
+    name: "CSS3",
+    image: css,
+    link: "https://developer.mozilla.org/es/docs/Web/CSS",
+    description: "Lenguaje de estilo para diseñar y presentar documentos HTML.",
+    category: "frontend"
+  },
+  {
+    name: "JavaScript (ES6+)",
+    image: js,
+    link: "https://developer.mozilla.org/es/docs/Web/JavaScript",
+    description: "Lenguaje de programación que permite crear contenido dinámico en páginas web.",
+    category: "frontend"
+  },
+  {
+    name: "React",
+    image: react,
+    link: "https://es.react.dev/",
+    description: "Biblioteca de JavaScript para construir interfaces de usuario interactivas y componentes reutilizables.",
+    category: "frontend"
+  },
+  
+  // Backend
+  {
+    name: "Flask",
+    image: flask,
+    link: "https://flask.palletsprojects.com/",
+    description: "Microframework web ligero y flexible para Python que facilita la creación rápida de aplicaciones web.",
+    category: "backend"
+  },
+  {
+    name: "Django",
+    image: django,
+    link: "https://www.djangoproject.com/",
+    description: "Framework web de alto nivel en Python que promueve el desarrollo rápido y el diseño limpio y pragmático.",
+    category: "backend"
+  },
+  {
+    name: "FastAPI",
+    image: fastapi,
+    link: "https://fastapi.tiangolo.com/",
+    description: "Framework moderno y de alto rendimiento para construir APIs con Python basado en tipos estándar.",
+    category: "backend"
+  },
+  {
+    name: "Express",
+    image: express,
+    link: "https://expressjs.com/",
+    description: "Framework web minimalista y flexible para Node.js que facilita la creación de aplicaciones web y APIs.",
+    category: "backend"
+  },
+  
+  // Dev Tools
+  {
+    name: "Neovim",
+    image: neovim,
+    link: "https://neovim.io/",
+    description: "Editor de texto basado en Vim, extensible y enfocado en la experiencia del usuario y la compatibilidad de plugins.",
+    category: "devtools"
+  },
+  {
+    name: "Tmux",
+    image: tmux,
+    link: "https://github.com/tmux/tmux",
+    description: "Multiplexor de terminal que permite múltiples terminales virtuales en una sola ventana.",
+    category: "devtools"
+  },
+  {
+    name: "Git",
+    image: git,
+    link: "https://git-scm.com/",
+    description: "Sistema de control de versiones distribuido para rastrear cambios en el código fuente durante el desarrollo.",
+    category: "devtools"
+  },
+  {
+    name: "Docker",
+    image: docker,
+    link: "https://www.docker.com/",
+    description: "Plataforma de contenedorización que permite desarrollar, enviar y ejecutar aplicaciones en entornos aislados.",
+    category: "devtools"
+  },
+  {
+    name: "Alacritty",
+    image: alacritty,
+    link: "https://alacritty.org/",
+    description: "Emulador de terminal rápido y multiplataforma enfocado en rendimiento y simplicidad.",
+    category: "devtools"
+  },
+  {
+    name: "Ulauncher",
+    image: ulauncher,
+    link: "https://ulauncher.io/",
+    description: "Lanzador de aplicaciones para Linux que proporciona una forma rápida de buscar y lanzar aplicaciones.",
+    category: "devtools"
+  },
+  
+  // Database
+  {
+    name: "PostgreSQL",
+    image: postgres,
+    link: "https://www.postgresql.org/",
+    description: "Sistema de gestión de bases de datos relacional orientado a objetos y de código abierto.",
+    category: "database"
+  },
+  
+  // OS
+  {
+    name: "Arch Linux",
+    image: archlinux,
+    link: "https://archlinux.org/",
+    description: "Distribución Linux ligera y flexible que sigue el principio KISS (Keep It Simple, Stupid).",
+    category: "os"
+  }
+];
+
+// Agrupar tecnologías por categoría
+const frontendTechs = technologies.filter(tech => tech.category === "frontend");
+const backendTechs = technologies.filter(tech => tech.category === "backend");
+const devTools = technologies.filter(tech => tech.category === "devtools");
+const databases = technologies.filter(tech => tech.category === "database");
+const operatingSystems = technologies.filter(tech => tech.category === "os");
+---
+
+<section id="skills" class="py-12 sm:py-16 md:py-20">
+  <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 class="text-3xl md:text-4xl font-bold text-center text-blue-navy mb-12">
+      Mis Tecnologías y Herramientas
+    </h2>
+    
+    <!-- Frontend -->
+    <div class="mb-16 animate-fade-in animate-delay-100">
+      <div class="flex items-center justify-center mb-8">
+        <h3 class="text-2xl md:text-3xl font-semibold text-blue-royal mr-3">
+          Frontend
+        </h3>
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-pencil-star" width="32" height="32" viewBox="0 0 24 24" stroke-width="1.5" stroke="#001c57" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <path d="M17.5 10.5l1 -1a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4h4l2 -2" />
+          <path d="M13.5 6.5l4 4" />
+          <path d="M17.8 20.817l-2.172 1.138a.392 .392 0 0 1 -.568 -.41l.415 -2.411l-1.757 -1.707a.389 .389 0 0 1 .217 -.665l2.428 -.352l1.086 -2.193a.392 .392 0 0 1 .702 0l1.086 2.193l2.428 .352a.39 .39 0 0 1 .217 .665l-1.757 1.707l.414 2.41a.39 .39 0 0 1 -.567 .411l-2.172 -1.138z" />
+        </svg>
+      </div>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+        {frontendTechs.map(tech => (
+          <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:scale-105 border border-neutral-light group">
+            <div class="h-36 sm:h-40 flex items-center justify-center p-4 bg-gradient-to-br from-blue-royal/5 to-blue-bright/5">
+              <Image 
+                src={tech.image} 
+                alt={tech.name} 
+                class="max-h-full max-w-full object-contain"
+                width={150}
+                height={150}
+              />
+            </div>
+            <div class="p-4 sm:p-6">
+              <h4 class="text-lg font-semibold text-blue-navy mb-2 group-hover:text-blue-bright transition-colors">{tech.name}</h4>
+              <p class="text-sm text-neutral-dark mb-4 line-clamp-3">{tech.description}</p>
+              <a 
+                href={tech.link} 
+                target="_blank"
+                rel="noopener noreferrer" 
+                class="inline-flex items-center text-blue-royal hover:text-blue-bright text-sm font-medium transition-colors"
+              >
+                Ver más
+                <svg xmlns="http://www.w3.org/2000/svg" class="ml-1 w-4 h-4" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                  <path d="M5 12l14 0"></path>
+                  <path d="M13 18l6 -6"></path>
+                  <path d="M13 6l6 6"></path>
+                </svg>
+              </a>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+    
+    <!-- Backend -->
+    <div class="mb-16 animate-fade-in animate-delay-200">
+      <div class="flex items-center justify-center mb-8">
+        <h3 class="text-2xl md:text-3xl font-semibold text-blue-royal mr-3">
+          Backend / API
+        </h3>
+        <svg width="32" height="32" viewBox="0 0 24 24" stroke-width="1.5" stroke="#001c57" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+          <path d="M7 8l-4 4l4 4"></path>
+          <path d="M17 8l4 4l-4 4"></path>
+          <path d="M14 4l-4 16"></path>
+        </svg>
+      </div>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+        {backendTechs.map(tech => (
+          <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:scale-105 border border-neutral-light group">
+            <div class="h-36 sm:h-40 flex items-center justify-center p-4 bg-gradient-to-br from-blue-royal/5 to-blue-bright/5">
+              <Image 
+                src={tech.image} 
+                alt={tech.name} 
+                class="max-h-full max-w-full object-contain"
+                width={150}
+                height={150}
+              />
+            </div>
+            <div class="p-4 sm:p-6">
+              <h4 class="text-lg font-semibold text-blue-navy mb-2 group-hover:text-blue-bright transition-colors">{tech.name}</h4>
+              <p class="text-sm text-neutral-dark mb-4 line-clamp-3">{tech.description}</p>
+              <a 
+                href={tech.link} 
+                target="_blank"
+                rel="noopener noreferrer" 
+                class="inline-flex items-center text-blue-royal hover:text-blue-bright text-sm font-medium transition-colors"
+              >
+                Ver más
+                <svg xmlns="http://www.w3.org/2000/svg" class="ml-1 w-4 h-4" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                  <path d="M5 12l14 0"></path>
+                  <path d="M13 18l6 -6"></path>
+                  <path d="M13 6l6 6"></path>
+                </svg>
+              </a>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+    
+    <!-- Herramientas de Desarrollo -->
+    <div class="mb-16 animate-fade-in animate-delay-300">
+      <div class="flex items-center justify-center mb-8">
+        <h3 class="text-2xl md:text-3xl font-semibold text-blue-royal mr-3">
+          Herramientas de Desarrollo
+        </h3>
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-tools" width="32" height="32" viewBox="0 0 24 24" stroke-width="1.5" stroke="#001c57" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <path d="M3 21h4l13 -13a1.5 1.5 0 0 0 -4 -4l-13 13v4" />
+          <path d="M14.5 5.5l4 4" />
+          <path d="M12 8l-5 -5l-4 4l5 5" />
+          <path d="M7 8l-1.5 1.5" />
+          <path d="M16 12l5 5l-4 4l-5 -5" />
+          <path d="M16 17l-1.5 1.5" />
+        </svg>
+      </div>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 sm:gap-8">
+        {devTools.map(tool => (
+          <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 hover:scale-105 border border-neutral-light group">
+            <div class="h-28 flex items-center justify-center p-4 bg-gradient-to-br from-blue-royal/5 to-blue-bright/5">
+              <Image 
+                src={tool.image} 
+                alt={tool.name} 
+                class="max-h-full max-w-full object-contain"
+                width={100}
+                height={100}
+              />
+            </div>
+            <div class="p-4 text-center">
+              <h4 class="text-base font-semibold text-blue-navy group-hover:text-blue-bright transition-colors">{tool.name}</h4>
+              <a 
+                href={tool.link} 
+                target="_blank"
+                rel="noopener noreferrer" 
+                class="mt-2 inline-flex items-center text-blue-royal hover:text-blue-bright text-xs font-medium transition-colors"
+              >
+                Más info
+                <svg xmlns="http://www.w3.org/2000/svg" class="ml-1 w-3 h-3" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                  <path d="M5 12l14 0"></path>
+                  <path d="M13 18l6 -6"></path>
+                  <path d="M13 6l6 6"></path>
+                </svg>
+              </a>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+    
+<!-- Base de Datos y Sistema Operativo -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 animate-fade-in animate-delay-400">
+  <!-- Base de Datos -->
+  <div class="flex flex-col items-center">
+    <div class="flex items-center justify-center mb-8">
+      <h3 class="text-2xl md:text-3xl font-semibold text-blue-royal mr-3">
+        Base de Datos
+      </h3>
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-database" width="32" height="32" viewBox="0 0 24 24" stroke-width="1.5" stroke="#001c57" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+        <path d="M12 6m-8 0a8 3 0 1 0 16 0a8 3 0 1 0 -16 0" />
+        <path d="M4 6v6a8 3 0 0 0 16 0v-6" />
+        <path d="M4 12v6a8 3 0 0 0 16 0v-6" />
+      </svg>
+    </div>
+    
+    {databases.map(db => (
+      <div class="bg-white rounded-xl shadow-lg overflow-hidden max-w-sm w-full hover:shadow-xl transition-all duration-300 hover:scale-105 border border-neutral-light group">
+        <div class="h-40 flex items-center justify-center p-4 bg-gradient-to-br from-blue-royal/5 to-blue-bright/5">
+          <Image 
+            src={db.image} 
+            alt={db.name} 
+            class="max-h-full max-w-full object-contain"
+            width={150}
+            height={150}
+          />
+        </div>
+        <div class="p-4 sm:p-6">
+          <h4 class="text-lg font-semibold text-blue-navy mb-2 group-hover:text-blue-bright transition-colors text-center">{db.name}</h4>
+          <p class="text-sm text-neutral-dark mb-4">{db.description}</p>
+          <div class="flex justify-center">
+            <a 
+              href={db.link} 
+              target="_blank"
+              rel="noopener noreferrer" 
+              class="inline-flex items-center text-blue-royal hover:text-blue-bright text-sm font-medium transition-colors"
+            >
+              Ver más
+              <svg xmlns="http://www.w3.org/2000/svg" class="ml-1 w-4 h-4" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                <path d="M5 12l14 0"></path>
+                <path d="M13 18l6 -6"></path>
+                <path d="M13 6l6 6"></path>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+  
+  <!-- Sistema Operativo -->
+  <div class="flex flex-col items-center">
+    <div class="flex items-center justify-center mb-8">
+      <h3 class="text-2xl md:text-3xl font-semibold text-blue-royal mr-3">
+        Sistema Operativo
+      </h3>
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-device-laptop" width="32" height="32" viewBox="0 0 24 24" stroke-width="1.5" stroke="#001c57" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+        <path d="M3 19l18 0" />
+        <path d="M5 6m0 1a1 1 0 0 1 1 -1h12a1 1 0 0 1 1 1v8a1 1 0 0 1 -1 1h-12a1 1 0 0 1 -1 -1z" />
+      </svg>
+    </div>
+    
+    {operatingSystems.map(os => (
+      <div class="bg-white rounded-xl shadow-lg overflow-hidden max-w-sm w-full hover:shadow-xl transition-all duration-300 hover:scale-105 border border-neutral-light group">
+        <div class="h-40 flex items-center justify-center p-4 bg-gradient-to-br from-blue-royal/5 to-blue-bright/5">
+          <Image 
+            src={os.image} 
+            alt={os.name} 
+            class="max-h-full max-w-full object-contain"
+            width={150}
+            height={150}
+          />
+        </div>
+        <div class="p-4 sm:p-6">
+          <h4 class="text-lg font-semibold text-blue-navy mb-2 group-hover:text-blue-bright transition-colors text-center">{os.name}</h4>
+          <p class="text-sm text-neutral-dark mb-4">{os.description}</p>
+          <div class="flex justify-center">
+            <a 
+              href={os.link} 
+              target="_blank"
+              rel="noopener noreferrer" 
+              class="inline-flex items-center text-blue-royal hover:text-blue-bright text-sm font-medium transition-colors"
+            >
+              Ver más
+              <svg xmlns="http://www.w3.org/2000/svg" class="ml-1 w-4 h-4" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                <path d="M5 12l14 0"></path>
+                <path d="M13 18l6 -6"></path>
+                <path d="M13 6l6 6"></path>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
+  </div>
+</section>
+
+<style>
+  /* Asegurarse de que las tarjetas tengan la misma altura en cada fila */
+  .grid > div {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .grid > div > div:last-child {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Para asegurar que los botones de "Ver más" se alineen al fondo */
+  .grid > div > div:last-child a {
+    margin-top: auto;
+  }
+  
+  /* Limitar la descripción a 3 líneas */
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  /* Animaciones adicionales para mejorar la experiencia visual */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .animate-fade-in {
+    animation: fadeIn 0.8s ease-out forwards;
+  }
+  
+  .animate-delay-100 {
+    animation-delay: 0.1s;
+  }
+  
+  .animate-delay-200 {
+    animation-delay: 0.2s;
+  }
+  
+  .animate-delay-300 {
+    animation-delay: 0.3s;
+  }
+  
+  .animate-delay-400 {
+    animation-delay: 0.4s;
+  }
+  
+  /* Ajustes responsivos adicionales */
+  @media (max-width: 640px) {
+    .grid-cols-2 {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
