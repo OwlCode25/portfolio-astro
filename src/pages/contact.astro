@@ -144,20 +144,55 @@ if (errorParam === 'email') {
   <a href="https://policies.google.com/terms" class="text-blue-300 hover:text-blue-400" target="_blank">Términos de Servicio</a> de Google.
 </div>
 
-<!-- Scripts de reCAPTCHA -->
-<script is:inline>
-  grecaptcha.ready(function() {
-    document.getElementById('contact-form').addEventListener('submit', function(event) {
+<!-- Script para cargar reCAPTCHA -->
+<script is:inline define:vars={{ siteKey: RECAPTCHA_SITE_KEY }}>
+  // Primero cargamos el script de reCAPTCHA
+  const loadRecaptchaScript = () => {
+    const script = document.createElement('script');
+    script.src = `https://www.google.com/recaptcha/api.js?render=${siteKey}`;
+    script.async = true;
+    script.defer = true;
+    document.head.appendChild(script);
+    
+    return new Promise((resolve) => {
+      script.onload = resolve;
+    });
+  };
+  
+  // Función para ejecutar reCAPTCHA
+  const executeRecaptcha = async () => {
+    return new Promise((resolve) => {
+      grecaptcha.ready(() => {
+        grecaptcha.execute(siteKey, {action: 'submit'})
+          .then(token => {
+            resolve(token);
+          });
+      });
+    });
+  };
+  
+  // Inicialización y manejo del formulario
+  document.addEventListener('DOMContentLoaded', async () => {
+    // Cargamos el script de reCAPTCHA
+    await loadRecaptchaScript();
+    
+    const form = document.getElementById('contact-form');
+    const recaptchaInput = document.getElementById('g-recaptcha-response');
+    
+    form.addEventListener('submit', async (event) => {
       event.preventDefault();
       
-      grecaptcha.execute('RECAPTCHA_SITE_KEY', {action: 'submit'}).then(function(token) {
-        document.getElementById('g-recaptcha-response').value = token;
+      try {
+        // Solicitamos un nuevo token justo antes de enviar
+        const token = await executeRecaptcha();
+        recaptchaInput.value = token;
         
-        document.getElementById('contact-form').submit();
-      });
+        // Enviamos el formulario
+        form.submit();
+      } catch (error) {
+        console.error('Error al ejecutar reCAPTCHA:', error);
+      }
     });
   });
 </script>
-
-<script is:inline src={`https://www.google.com/recaptcha/api.js?render=${RECAPTCHA_SITE_KEY}`}></script>
 </ContactLayout>
