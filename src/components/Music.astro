@@ -1,11 +1,74 @@
 ---
-import "transition-style"
+import 'transition-style';
+
+// Definición de canciones favoritas
+const favoriteSongs = [
+  {
+    id: "1bpJRtQilyNjB8biUh4k25",
+    title: "Time (Slowed + Reverb)",
+    artist: "Hans Zimmer"
+  },
+  {
+    id: "3lI1sZnyM1Ju3ApgNo0ITT",
+    title: "Hacking to the Gate",
+    artist: "Steins;Gate"
+  },
+  {
+    id: "2hwOoMtWPtTSSn6WHV7Vp5",
+    title: "Industry Baby",
+    artist: "Lil Nas X"
+  }
+];
 ---
 
-<div class="flex flex-col items-center gap-4">
-  <h2 class="xl:text-2xl text-auto text-slate-700 font-semibold ">Mi música favorita al momento de codear 🎧⚡</h2>
-<iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/1bpJRtQilyNjB8biUh4k25?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-<iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/3lI1sZnyM1Ju3ApgNo0ITT?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-<iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/2hwOoMtWPtTSSn6WHV7Vp5?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-</div>
+<section class="py-12 bg-gradient-to-b from-neutral-white to-neutral-light animate-fade-in" id="music-section">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-8">
+      <h2 class="text-2xl md:text-3xl font-bold text-blue-royal mb-3">
+        Mi música favorita al momento de codear
+      </h2>
+      <p class="text-neutral-dark">
+        Estas son algunas de las canciones que me ayudan a mantener el enfoque y la creatividad mientras programo 🎧⚡
+      </p>
+    </div>
+    
+    <div class="space-y-4 md:space-y-6">
+      {favoriteSongs.map((song, index) => (
+        <div 
+          class="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden border border-blue-navy/10 animate-fade-in"
+          style={`animation-delay: ${index * 200}ms;`}
+        >
+          <iframe 
+            style="border-radius:0px" 
+            src={`https://open.spotify.com/embed/track/${song.id}?utm_source=generator&theme=0`}
+            width="100%" 
+            height="152" 
+            frameBorder="0" 
+            allowfullscreen="" 
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+            loading="lazy"
+            title={`${song.title} - ${song.artist}`}
+          ></iframe>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
 
+<style>
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .animate-fade-in {
+    animation: fadeIn 0.8s ease-out forwards;
+    opacity: 0;
+  }
+</style>
