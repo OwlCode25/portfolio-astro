@@ -4,30 +4,35 @@ import Project from "./Project.astro";
 
 <section id="projects" class="py-16 animate-fade-in animate-once animate-duration-700 animate-delay-100">
   <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex items-center justify-center mb-12">
-      <h3 class="text-3xl font-bold text-blue-royal mr-2">
-        Un poco de mi trabajo
-      </h3>
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="44"
-        height="44"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="#001c57"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        class="icon icon-tabler icons-tabler-outline icon-tabler-git-pull-request"
-      >
-        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-        <path d="M6 18m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
-        <path d="M6 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
-        <path d="M18 18m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
-        <path d="M6 8l0 8"></path>
-        <path d="M11 6h5a2 2 0 0 1 2 2v8"></path>
-        <path d="M14 9l-3 -3l3 -3"></path>
-      </svg>
+    <div class="text-center mb-12">
+      <div class="flex items-center justify-center gap-3 mb-3">
+        <h2 class="font-oswald text-3xl font-bold uppercase tracking-[0.03em] text-[#e2e8f0] text-balance">
+          Proyectos reales en producción
+        </h2>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="36"
+          height="36"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="#38bdf8"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="icon icon-tabler icons-tabler-outline icon-tabler-git-pull-request flex-shrink-0"
+        >
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+          <path d="M6 18m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
+          <path d="M6 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
+          <path d="M18 18m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
+          <path d="M6 8l0 8"></path>
+          <path d="M11 6h5a2 2 0 0 1 2 2v8"></path>
+          <path d="M14 9l-3 -3l3 -3"></path>
+        </svg>
+      </div>
+      <p class="text-[#94a3b8] text-sm max-w-md mx-auto text-pretty">
+        Soluciones que ya están funcionando para empresas e instituciones.
+      </p>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
@@ -122,7 +127,7 @@ import Project from "./Project.astro";
 
       <Project
         name="Control de inventario"
-        desc="Solución desarrollada para pequeñas y medianas empresas de construcción para que puedan controlar el inventario de sus productos, actualmente no está terminada pero sí lleva un gran avance. La aplicación tendrá una mejora continua prometiendo a los clientes nuevos metodos y procesos para gestionar el inventario de su equipo."
+        desc="Solución desarrollada para pequeñas y medianas empresas de construcción para que puedan controlar el inventario de sus productos. La aplicación evoluciona con mejora continua, incorporando nuevos métodos y procesos para gestionar el inventario de cada equipo."
         images={[
           {
             src: "https://user-images.githubusercontent.com/25181517/183423775-2276e25d-d43d-4e58-890b-edbc88e915f7.png",
