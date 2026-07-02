@@ -4,22 +4,61 @@ import Navigation from '../components/Navigation.astro';
 
 interface Props {
 	title: string;
+	description?: string;
+	ogImage?: string;
 }
 
-const { title } = Astro.props;
+const {
+	title,
+	description = "Desarrollo de software a medida para empresas y emprendedores: aplicaciones web y móviles, automatización con IA e integración de sistemas.",
+	ogImage = "/android-chrome-512x512.png",
+} = Astro.props;
+
+const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : null;
+const ogImageUrl = Astro.site ? new URL(ogImage, Astro.site).href : ogImage;
+
+const jsonLd = {
+	"@context": "https://schema.org",
+	"@type": "Person",
+	name: "Germán Astudillo",
+	alternateName: "OwlCode25",
+	jobTitle: "Desarrollador de Software Freelance",
+	...(Astro.site ? { url: Astro.site.href } : {}),
+	sameAs: [
+		"https://www.linkedin.com/in/germ%C3%A1n-astudillo-9803b01ba/",
+		"https://www.github.com/OwlCode25",
+	],
+	knowsAbout: [
+		"Desarrollo de Aplicaciones",
+		"Automatización con IA",
+		"Integración de Sistemas",
+	],
+};
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="es">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="description" content="Portafolio de desarrollador Fullstack Germán Astudillo. Portfolio creado con Astro!" />
-		<meta name="viewport" content="width=device-width" />
+		<meta name="description" content={description} />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		{canonical && <link rel="canonical" href={canonical} />}
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		{canonical && <meta property="og:url" content={canonical} />}
+		<meta property="og:image" content={ogImageUrl} />
+		<meta property="og:locale" content="es" />
+		<meta name="twitter:card" content="summary" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={ogImageUrl} />
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 <link rel="manifest" href="/site.webmanifest">
 		<meta name="generator" content={Astro.generator} />
+		<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Madimi+One&family=Oswald:wght@200..700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Rubik:ital,wght@0,300..900;1,300..900&family=Truculenta:opsz,wght@12..72,100..900&display=swap" rel="stylesheet">
