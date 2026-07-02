@@ -16,7 +16,7 @@ export default {
 					navy: '#0a2472',     // Azul marino
 					midnight: '#0b1b54', // Azul medianoche
 					cobalt: '#1338be',   // Azul cobalto
-					bright: '#2851e3',   // Azul brillante
+					bright: '#38bdf8',   // Azul brillante
 				},
 				// Tonos neutros
 				neutral: {
@@ -28,8 +28,14 @@ export default {
 				accent: {
 					red: '#c22026',     // Rojo emblema
 					gold: '#c9a227',    // Dorado
-				}
-			}
+				},
+				// Blueprint design system
+				blueprint: '#070b14',
+				surface: '#0d1524',
+			},
+			fontFamily: {
+				oswald: ['Oswald', 'sans-serif'],
+			},
 		},
 	},
 	plugins: [
