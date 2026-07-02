@@ -3,8 +3,16 @@ import ContactLayout from "../layouts/ContactLayout.astro";
 import { Resend } from "resend"
 const resend = new Resend(import.meta.env.RESEND_API_KEY)
 
-const RECAPTCHA_SITE_KEY = "6LfjUUIrAAAAAMW53iOxwl7MxmfPVH7bLD9qxjmv"; 
+const RECAPTCHA_SITE_KEY = "6LfjUUIrAAAAAMW53iOxwl7MxmfPVH7bLD9qxjmv";
 const RECAPTCHA_SECRET_KEY = import.meta.env.RECAPTCHA_SECRET_KEY;
+
+// Servicios permitidos: whitelist para no interpolar input crudo en el correo
+const serviceLabels = {
+  apps: "Desarrollo de Aplicaciones",
+  ai: "Automatización con IA",
+  integration: "Integración de Sistemas",
+  otro: "Otro / Consulta general",
+};
 
 if (Astro.request.method === 'POST'){
   try{
@@ -12,6 +20,8 @@ if (Astro.request.method === 'POST'){
     const name = dataform.get('name')
     const email = dataform.get('email')
     const message = dataform.get('message')
+    const servicioKey = dataform.get('servicio')
+    const servicio = serviceLabels[servicioKey] ?? serviceLabels.otro
     const recaptchaToken = dataform.get('g-recaptcha-response')
 
     const recaptchaVerifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
@@ -43,8 +53,8 @@ if (Astro.request.method === 'POST'){
       const { data, error } = await resend.emails.send({
         from: 'onboarding@resend.dev',
         to: 'g.astudilloc1@gmail.com',
-        subject: `¡Nuevo mensaje de ${name} desde tu portafolio!`,
-        html: `<strong>${name} - ${email}<br /> ${message} </strong>`
+        subject: `Nuevo lead [${servicio}] de ${name} — portafolio`,
+        html: `<p><strong>Servicio:</strong> ${servicio}</p><p><strong>${name} - ${email}</strong></p><p>${message}</p>`
       });
 
       if (error) {
@@ -64,6 +74,8 @@ if (Astro.request.method === 'POST'){
 
 // Determinar si hay errores en la URL
 const url = new URL(Astro.request.url);
+const servicioParam = url.searchParams.get('servicio');
+const selectedServicio = serviceLabels[servicioParam] ? servicioParam : 'otro';
 const errorParam = url.searchParams.get('error');
 let errorMessage = '';
 
@@ -117,6 +129,14 @@ if (errorParam === 'email') {
         <input type="email" name="email" id="email-address-icon" class="bg-surface border border-[rgba(56,189,248,0.2)] text-[#e2e8f0] placeholder:text-[#94a3b8] text-sm rounded-lg focus:ring-blue-bright focus:border-blue-bright block w-full ps-10 p-2.5" placeholder="nombre@correo.com" required>
       </div>
     </div>
+  </div>
+  <div class="flex flex-col mb-5">
+    <label for="servicio" class="block mb-2 text-sm font-oswald uppercase tracking-[0.05em] text-[#94a3b8]">Servicio de interés</label>
+    <select id="servicio" name="servicio" class="block p-2.5 w-full text-sm text-[#e2e8f0] bg-surface rounded-lg border border-[rgba(56,189,248,0.2)] focus:ring-blue-bright focus:border-blue-bright">
+      {Object.entries(serviceLabels).map(([key, label]) => (
+        <option value={key} selected={key === selectedServicio}>{label}</option>
+      ))}
+    </select>
   </div>
   <div class="flex flex-col">
     <label for="message" class="block mb-2 text-sm font-oswald uppercase tracking-[0.05em] text-[#94a3b8]">Mensaje</label>
