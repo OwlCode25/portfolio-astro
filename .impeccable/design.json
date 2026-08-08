@@ -1,0 +1,110 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-08T16:42:20Z",
+  "title": "Design System: OwlCode",
+  "extensions": {
+    "colorMeta": {
+      "periwinkle": { "role": "primary", "displayName": "Periwinkle", "canonical": "#7AA2F7", "tonalRamp": ["#0F1A33", "#1B2C57", "#294480", "#3E5EA8", "#5A7FCB", "#7AA2F7", "#A3C0FA", "#D2E1FD"] },
+      "blueprint": { "role": "neutral", "displayName": "Blueprint", "canonical": "#11121A", "tonalRamp": ["#050506", "#0A0A0E", "#11121A", "#1C1D2A", "#2C2E42", "#454761", "#6C6F92", "#A3A6C4"] },
+      "surface": { "role": "neutral", "displayName": "Surface", "canonical": "#171923", "tonalRamp": ["#08090C", "#0F1016", "#171923", "#222533", "#333749", "#4C5169", "#727897", "#A9AFC6"] },
+      "ink": { "role": "neutral", "displayName": "Ink", "canonical": "#F2F4FC", "tonalRamp": ["#3A3D4A", "#565A6E", "#7A7F98", "#A6AAC0", "#C9CCDC", "#E4E6F0", "#F2F4FC", "#FBFBFE"] },
+      "ink-muted": { "role": "neutral", "displayName": "Ink Muted", "canonical": "#98A2C7", "tonalRamp": ["#232738", "#333952", "#4A5170", "#646D91", "#8089AC", "#98A2C7", "#B6BDDA", "#D8DCEC"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Hero and major section headings only, always uppercase, never with a kicker above it." },
+      "label": { "displayName": "Label", "purpose": "Nav items, buttons, chips, form labels — bold, tracked, uppercase." },
+      "body": { "displayName": "Body", "purpose": "Paragraphs, descriptions, placeholder text." }
+    },
+    "shadows": [
+      { "name": "brand-mark-glow", "value": "drop-shadow(0 12px 28px rgba(122,162,247,0.35))", "purpose": "The only soft-blur shadow in the system, reserved for the hero-scale brand mark." }
+    ],
+    "motion": [
+      { "name": "hover-standard", "value": "all 200ms ease", "purpose": "Default hover/focus transition for buttons, links, and nav items." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Default CTA — transparent fill, periwinkle border/text, sharp corners, fills solid periwinkle with near-black text on hover.",
+      "html": "<button class=\"ds-btn-outline\">VER SERVICIOS</button>",
+      "css": ".ds-btn-outline { background: transparent; color: #7AA2F7; border: 1px solid #7AA2F7; padding: 10px 20px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.875rem; transition: all 0.2s ease; } .ds-btn-outline:hover { background: #7AA2F7; color: #11121A; } .ds-btn-outline:focus-visible { outline: 2px solid #7AA2F7; outline-offset: 2px; }"
+    },
+    {
+      "name": "Solid Button",
+      "kind": "button",
+      "refersTo": "button-solid",
+      "description": "Single highest-priority CTA per section — solid periwinkle fill, near-black text, sharp corners.",
+      "html": "<button class=\"ds-btn-solid\">HABLEMOS</button>",
+      "css": ".ds-btn-solid { background: #7AA2F7; color: #11121A; border: none; padding: 12px 24px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.875rem; transition: filter 0.2s ease; } .ds-btn-solid:hover { filter: brightness(1.1); } .ds-btn-solid:focus-visible { outline: 2px solid #F2F4FC; outline-offset: 2px; }"
+    },
+    {
+      "name": "Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Service/project card — surface background, hairline periwinkle border, sharp-ish small radius, optional top accent line for featured cards.",
+      "html": "<div class=\"ds-card\"><div class=\"ds-card-accent\"></div><h3>Desarrollo de Aplicaciones</h3><p>Aplicaciones web, móviles y de escritorio a medida.</p></div>",
+      "css": ".ds-card { position: relative; background: #171923; border: 1px solid rgba(122,162,247,0.15); border-radius: 6px; padding: 24px 32px; overflow: hidden; transition: border-color 0.2s ease; } .ds-card:hover { border-color: rgba(122,162,247,0.3); } .ds-card-accent { position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(to right, transparent, rgba(122,162,247,0.4), transparent); } .ds-card h3 { color: #F2F4FC; font-weight: 700; margin-bottom: 8px; } .ds-card p { color: #98A2C7; font-size: 0.875rem; }"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Form field — surface background, hairline periwinkle border, rounded corners, periwinkle focus ring.",
+      "html": "<input class=\"ds-input\" type=\"text\" placeholder=\"Nombre Apellido\" />",
+      "css": ".ds-input { background: #171923; color: #F2F4FC; border: 1px solid rgba(122,162,247,0.2); border-radius: 8px; padding: 10px; font-size: 0.875rem; } .ds-input::placeholder { color: #98A2C7; } .ds-input:focus { outline: none; border-color: #7AA2F7; box-shadow: 0 0 0 1px #7AA2F7; }"
+    },
+    {
+      "name": "Navigation Bar",
+      "kind": "nav",
+      "refersTo": "navigation",
+      "description": "Fixed dark bar, hairline periwinkle bottom border, periwinkle wordmark + isotipo, nav links inherit currentColor icons.",
+      "html": "<nav class=\"ds-nav\"><div class=\"ds-nav-brand\"><span class=\"ds-nav-brand-thin\">OWL</span><span class=\"ds-nav-brand-bold\">CODE</span></div><a class=\"ds-nav-link\" href=\"#\">SERVICIOS</a></nav>",
+      "css": ".ds-nav { background: #11121A; border-bottom: 1px solid rgba(122,162,247,0.15); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; } .ds-nav-brand-thin { color: #7AA2F7; font-weight: 200; text-transform: uppercase; letter-spacing: 0.1em; } .ds-nav-brand-bold { color: #7AA2F7; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; } .ds-nav-link { color: #98A2C7; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; transition: color 0.2s ease; } .ds-nav-link:hover { color: #F2F4FC; }"
+    },
+    {
+      "name": "Brand Mark Hero",
+      "kind": "custom",
+      "refersTo": "brand-mark",
+      "description": "Hero-scale isotipo treatment — periwinkle-ringed circle, radial glow, drop-shadowed owl mark. The signature component of the system.",
+      "html": "<div class=\"ds-brand-mark\"><div class=\"ds-brand-mark-glow\"></div><svg class=\"ds-brand-mark-icon\" viewBox=\"0 0 541.88 571.44\"><!-- isotipo paths --></svg></div>",
+      "css": ".ds-brand-mark { position: relative; width: 320px; aspect-ratio: 1; border-radius: 9999px; background: #171923; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 2px solid rgba(122,162,247,0.3); display: flex; align-items: center; justify-content: center; overflow: hidden; } .ds-brand-mark-glow { position: absolute; inset: 0; background: radial-gradient(circle at center, rgba(122,162,247,0.14), transparent 70%); } .ds-brand-mark-icon { position: relative; width: 55%; height: auto; fill: #7AA2F7; filter: drop-shadow(0 12px 28px rgba(122,162,247,0.35)); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Tech Owl",
+    "overview": "OwlCode is a solo developer's brand carried by one mark and two colors: a periwinkle (#7AA2F7) owl-with-circuit-motif on near-black (#11121A), with nothing else competing for attention. The system replaces an earlier ad-hoc \"Blueprint\" theme (cyan accent, gold CTA, Oswald type) with a locked, designer-specified identity: the brand's own manual fixes the palette and typography, and this build treats that manual as ground truth rather than a starting point to riff on. Roboto's ExtraLight/Bold contrast — thin, wide display type against bold, tracked labels — does the expressive work that color is not allowed to do, since periwinkle is the only accent in the system, full stop, including status indicators.",
+    "keyCharacteristics": [
+      "One accent color, no exceptions — not for status dots, not for a \"just this once\" second hue.",
+      "Sharp-cornered CTAs against rounded inputs, icon buttons, and chips — a deliberate, consistent split, not an inconsistency.",
+      "Thin ExtraLight display type paired with bold, uppercase, wide-tracked labels — the type pairing carries hierarchy instead of color.",
+      "No kicker/eyebrow lines above headings, even where the source brand mockup used one — the heading always carries its own weight.",
+      "The brand mark itself (isotipo) is usable as hero-scale imagery, not just a small nav glyph — it is confident enough to anchor a first viewport on its own."
+    ],
+    "rules": [
+      { "name": "The Sole Accent Rule", "body": "Periwinkle is the only accent color anywhere in the interface — including semantic status dots. The one deliberate exception is the contact form's error state, which uses a restrained red because error semantics are a near-universal usability affordance, not a brand accent.", "section": "colors" },
+      { "name": "The No-Kicker Rule", "body": "No small label, eyebrow, or tagline sits above a heading. Identity or context information that would have lived in a kicker belongs in the nav, the copy itself, or is simply dropped.", "section": "typography" },
+      { "name": "The Flat Card Rule", "body": "Cards and panels never carry a box-shadow. A hairline border and a background-color step (surface vs. blueprint) are the entire depth vocabulary for content containers.", "section": "elevation" },
+      { "name": "The Sharp CTA Rule", "body": "Buttons that trigger an action are always sharp-cornered rectangles — zero border-radius. Everything else (inputs, icon buttons, chips, the mobile menu panel) is rounded.", "section": "typography" }
+    ],
+    "dos": [
+      "Do use periwinkle (#7AA2F7) as the only accent, everywhere.",
+      "Do keep CTA buttons sharp-cornered while inputs, icon buttons, and chips stay rounded.",
+      "Do use Roboto ExtraLight for display headlines and Roboto Bold for labels/buttons — no other typeface.",
+      "Do build depth with hairline borders, background-color steps, and (for the brand mark only) a soft glow/drop-shadow.",
+      "Do tint secondary text from the periwinkle hue (ink-muted), never plain gray."
+    ],
+    "donts": [
+      "Don't introduce a second or third accent hue for any reason.",
+      "Don't add a kicker/eyebrow line above a heading, even if a reference mockup shows one.",
+      "Don't hardcode icon stroke colors as #fff/#ffffff; use currentColor.",
+      "Don't drop unrecolored, full-color stock illustration onto a brand-critical screen — integrate it into the two-color system or replace it with the brand mark itself."
+    ]
+  }
+}

@@ -10,31 +10,19 @@ export default {
 	theme: {
 		extend: {
 			colors: {
-				// Colores primarios
-				blue: {
-					royal: '#001c57',    // Azul real profundo
-					navy: '#0a2472',     // Azul marino
-					midnight: '#0b1b54', // Azul medianoche
-					cobalt: '#1338be',   // Azul cobalto
-					bright: '#38bdf8',   // Azul brillante
+				// OwlCode brand system — periwinkle-on-near-black, two colors only
+				brand: {
+					accent: '#7AA2F7', // Periwinkle — sole accent: borders, icons, CTAs, focus
 				},
-				// Tonos neutros
-				neutral: {
-					white: '#ffffff',      // Blanco
-					light: '#e6e9f0',      // Gris azulado claro
-					dark: '#2d3c5e',       // Gris azulado oscuro
+				blueprint: '#11121A', // Page background
+				surface: '#171923',   // Card / panel surface
+				ink: {
+					DEFAULT: '#F2F4FC', // Primary text
+					muted: '#98A2C7',   // Secondary/muted text, periwinkle-tinted (>=4.5:1 on background)
 				},
-				// Colores de acento
-				accent: {
-					red: '#c22026',     // Rojo emblema
-					gold: '#c9a227',    // Dorado
-				},
-				// Blueprint design system
-				blueprint: '#070b14',
-				surface: '#0d1524',
 			},
 			fontFamily: {
-				oswald: ['Oswald', 'sans-serif'],
+				display: ['Roboto', 'sans-serif'], // Display headlines — pair with font-extralight
 			},
 		},
 	},

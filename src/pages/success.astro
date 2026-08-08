@@ -1,7 +1,5 @@
 ---
 import ContactLayout from "../layouts/ContactLayout.astro";
-import img from "../assets/email-sent.png"
-import Image from "astro/components/Image.astro";
 ---
 
 <ContactLayout
@@ -10,11 +8,9 @@ import Image from "astro/components/Image.astro";
   noindex
 >
 
-<div class="mx-auto mt-16 mb-20 flex flex-col items-center">
-<h3 class="text-xl uppercase text-white text-center font-bold">¡Tu mensaje fue enviado con éxito!</h3>
-<br />
-<h3 class="text-lg uppercase text-white text-center font-bold">No tardaré en responderte, muchas gracias por contactarme :]</h3>
-<Image src={img} alt="email-enviado" class="rounded-3xl bg-blue-500 mt-10 "/>
+<div class="mx-auto mt-16 mb-20 flex flex-col items-center px-4">
+<h3 class="font-display font-extralight text-2xl uppercase tracking-[0.03em] text-ink text-center">¡Tu mensaje fue enviado con éxito!</h3>
+<p class="text-ink-muted text-sm text-center mt-4 max-w-md">No tardaré en responderte, muchas gracias por contactarme :]</p>
 </div>
 
 </ContactLayout>

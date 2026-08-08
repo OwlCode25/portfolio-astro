@@ -180,15 +180,15 @@ const categories = [
   <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
 
     <div class="text-center mb-12">
-      <h2 class="font-oswald text-3xl md:text-4xl font-bold uppercase tracking-[0.03em] text-[#e2e8f0]">
+      <h2 class="font-display font-extralight text-3xl md:text-4xl uppercase tracking-[0.03em] text-ink">
         Stack & Herramientas
       </h2>
     </div>
 
     <div class="space-y-2 animate-fade-in animate-once animate-duration-700">
       {categories.map(cat => (
-        <div class="flex flex-col sm:flex-row gap-3 sm:gap-8 items-start py-5 border-b border-[rgba(56,189,248,0.08)] last:border-0">
-          <span class="font-oswald text-xs uppercase tracking-widest text-[#94a3b8] sm:w-32 shrink-0 sm:pt-2">
+        <div class="flex flex-col sm:flex-row gap-3 sm:gap-8 items-start py-5 border-b border-brand-accent/8 last:border-0">
+          <span class="font-bold text-xs uppercase tracking-widest text-ink-muted sm:w-32 shrink-0 sm:pt-2">
             {cat.label}
           </span>
           <div class="flex flex-wrap gap-2">
@@ -197,7 +197,7 @@ const categories = [
                 href={tech.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                class="group flex items-center gap-2 bg-surface border border-[rgba(56,189,248,0.15)] hover:border-[rgba(56,189,248,0.35)] hover:bg-[rgba(56,189,248,0.06)] rounded px-3 py-2 transition-all duration-200"
+                class="group flex items-center gap-2 bg-surface border border-brand-accent/15 hover:border-brand-accent/35 hover:bg-brand-accent/6 rounded px-3 py-2 transition-all duration-200"
               >
                 <Image
                   src={tech.image}
@@ -206,7 +206,7 @@ const categories = [
                   height={20}
                   class="w-5 h-5 object-contain"
                 />
-                <span class="text-sm text-[#94a3b8] group-hover:text-[#e2e8f0] transition-colors whitespace-nowrap">
+                <span class="text-sm text-ink-muted group-hover:text-ink transition-colors whitespace-nowrap">
                   {tech.name}
                 </span>
               </a>
