@@ -80,6 +80,18 @@ const { class: className = "" } = Astro.props;
   const ORBIT_PERIOD_MS = 20000;
   /** When the ring has finished swinging into place and can start turning. */
   const ORBIT_SETTLED_MS = 1100;
+  /** When the eyes begin to open — the owl looks at you from that instant. */
+  const EYES_OPENING_MS = 760;
+
+  /**
+   * The wake-up runs in phases rather than flipping on all at once, so each
+   * behaviour can start at the beat it belongs to. A behaviour runs once the
+   * sequence has reached at least its own stage, so the values must stay
+   * ordered by the time each beat fires: GAZING at EYES_OPENING_MS, then
+   * RING_TURNING at ORBIT_SETTLED_MS, then IDLE when the entrance completes.
+   */
+  const Stage = { ASLEEP: 0, GAZING: 1, RING_TURNING: 2, IDLE: 3 } as const;
+  type StageValue = (typeof Stage)[keyof typeof Stage];
 
   function wakeBrandMark(mark: HTMLElement) {
     const owl = mark.querySelector<SVGSVGElement>("[data-owl-mark]");
@@ -112,11 +124,15 @@ const { class: className = "" } = Astro.props;
     utils.set(lids, { opacity: 0, scale: 0 });
     mark.dataset.wake = "on";
 
-    let awake = false;
-    let ringAwake = false;
+    let stage: StageValue = Stage.ASLEEP;
     let started = false;
     let inView = false;
     let blinkTimer = 0;
+
+    function reachStage(next: StageValue) {
+      if (next > stage) stage = next;
+      syncAmbient();
+    }
 
     // Blur rides a plain object and is written by hand: the inner <svg> already
     // carries a Tailwind drop-shadow filter, and animating `filter` on it
@@ -127,19 +143,25 @@ const { class: className = "" } = Astro.props;
       autoplay: false,
       defaults: { ease: "outExpo" },
       onComplete: () => {
-        awake = true;
         wrap.style.willChange = "";
-        syncAmbient();
+        reachStage(Stage.IDLE);
       },
     })
       .add(glow, { opacity: 0.85, scale: 1, duration: 900 }, 0)
       .add(orbit, { opacity: 1, scale: 1, rotate: 0, duration: ORBIT_SETTLED_MS }, 0)
+      // These two are listed in firing order. Note that a numeric timeline
+      // position is an absolute offset from the timeline start, not an offset
+      // from the previous step, so chain order does not determine when a step
+      // runs — keep the two in agreement so the sequence stays readable.
+      //
+      // Tracking begins as the lids start lifting, so the owl finishes opening
+      // its eyes already pointed at the visitor instead of snapping over
+      // afterwards. Safe to overlap: the gaze translates the inner pupil group
+      // while the entrance only scales the lid wrapper around it.
+      .call(() => reachStage(Stage.GAZING), EYES_OPENING_MS)
       // The ring starts turning the moment it lands, rather than idling until
       // the rest of the entrance (and the eyes' spring) has finished.
-      .call(() => {
-        ringAwake = true;
-        syncAmbient();
-      }, ORBIT_SETTLED_MS)
+      .call(() => reachStage(Stage.RING_TURNING), ORBIT_SETTLED_MS)
       .add(wrap, { opacity: 1, scale: 1, duration: 900 }, 120)
       .add(
         blurAmount,
@@ -177,7 +199,7 @@ const { class: className = "" } = Astro.props;
           duration: 900,
           ease: spring({ stiffness: 140, damping: 11 }),
         },
-        760,
+        EYES_OPENING_MS,
       )
       .add(glow, { opacity: [1, 0.8], duration: 700, ease: "inOutSine" }, 1000);
 
@@ -257,7 +279,7 @@ const { class: className = "" } = Astro.props;
     }
 
     function lean(active: boolean) {
-      if (!awake) return;
+      if (stage < Stage.IDLE) return;
       animate(wrap, {
         scale: active ? 1.045 : 1,
         duration: 420,
@@ -274,12 +296,18 @@ const { class: className = "" } = Astro.props;
     }
 
     // Nothing ambient runs while the mark is offscreen or the tab is hidden.
-    // The ring is gated separately: it turns from the moment it lands, while
-    // the glow, gaze and blink wait for the eyes to finish opening.
+    // Each behaviour additionally waits for its own beat in the wake-up.
     function syncAmbient() {
       const visible = inView && !document.hidden;
+      const reached = (required: number) => visible && stage >= required;
 
-      if (ringAwake && visible) {
+      if (reached(Stage.GAZING)) {
+        window.addEventListener("pointermove", trackPointer, { passive: true });
+      } else {
+        window.removeEventListener("pointermove", trackPointer);
+      }
+
+      if (reached(Stage.RING_TURNING)) {
         orbit.style.willChange = "transform";
         orbitSpin.play();
       } else {
@@ -287,13 +315,11 @@ const { class: className = "" } = Astro.props;
         orbitSpin.pause();
       }
 
-      if (awake && visible) {
+      if (reached(Stage.IDLE)) {
         glowBreath.play();
-        window.addEventListener("pointermove", trackPointer, { passive: true });
         scheduleBlink();
       } else {
         glowBreath.pause();
-        window.removeEventListener("pointermove", trackPointer);
         window.clearTimeout(blinkTimer);
       }
     }
@@ -301,8 +327,7 @@ const { class: className = "" } = Astro.props;
     // Full teardown: stop every animation, drop every listener, and hand the
     // markup back exactly as it was authored.
     function rest() {
-      awake = false;
-      ringAwake = false;
+      stage = Stage.ASLEEP;
       syncAmbient();
       observer.disconnect();
       entrance.pause();
