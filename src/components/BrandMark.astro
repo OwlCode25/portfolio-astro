@@ -74,8 +74,18 @@ const { class: className = "" } = Astro.props;
 
   /** Max pupil travel, in user units of the isotipo's 541.88-wide viewBox. */
   const PUPIL_DRIFT = 15;
-  const BLINK_MIN_MS = 4000;
-  const BLINK_MAX_MS = 9000;
+  /**
+   * Gap between blinks, randomised so the rhythm never reads as a metronome.
+   * Roughly a human resting blink rate; slower than this and the mark looks
+   * inert, much faster and it twitches in the reader's peripheral vision.
+   */
+  const BLINK_MIN_MS = 2000;
+  const BLINK_MAX_MS = 5000;
+  /**
+   * The first blink after the owl wakes, or after it comes back into view,
+   * comes quickly — otherwise the whole behaviour can go unnoticed.
+   */
+  const FIRST_BLINK_MS = 900;
   /** One full turn of the dotted orbit ring. Lower = faster sweep. */
   const ORBIT_PERIOD_MS = 20000;
   /** When the ring has finished swinging into place and can start turning. */
@@ -267,15 +277,21 @@ const { class: className = "" } = Astro.props;
       });
     }
 
-    function scheduleBlink() {
+    function scheduleBlink(delay?: number) {
       window.clearTimeout(blinkTimer);
       blinkTimer = window.setTimeout(
         () => {
+          blinkTimer = 0;
           blink();
           scheduleBlink();
         },
-        BLINK_MIN_MS + Math.random() * (BLINK_MAX_MS - BLINK_MIN_MS),
+        delay ?? BLINK_MIN_MS + Math.random() * (BLINK_MAX_MS - BLINK_MIN_MS),
       );
+    }
+
+    function cancelBlink() {
+      window.clearTimeout(blinkTimer);
+      blinkTimer = 0;
     }
 
     function lean(active: boolean) {
@@ -317,10 +333,14 @@ const { class: className = "" } = Astro.props;
 
       if (reached(Stage.IDLE)) {
         glowBreath.play();
-        scheduleBlink();
+        // Only arm the timer when none is pending. syncAmbient runs on every
+        // intersection and visibility change, and re-arming each time would
+        // keep pushing the blink into the future — starving it entirely if
+        // those events ever arrive faster than the delay.
+        if (!blinkTimer) scheduleBlink(FIRST_BLINK_MS);
       } else {
         glowBreath.pause();
-        window.clearTimeout(blinkTimer);
+        cancelBlink();
       }
     }
 
