@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- TODO: reemplazar TU-DOMINIO con la URL real de producción -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://TU-DOMINIO/</loc>
+    <loc>https://owlcode.dev/</loc>
   </url>
   <url>
-    <loc>https://TU-DOMINIO/contact</loc>
+    <loc>https://owlcode.dev/contact</loc>
   </url>
 </urlset>

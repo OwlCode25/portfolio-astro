@@ -1,6 +1,5 @@
-# TODO: reemplazar TU-DOMINIO con la URL real de producción
 User-agent: *
 Allow: /
 Disallow: /success
 
-Sitemap: https://TU-DOMINIO/sitemap.xml
+Sitemap: https://owlcode.dev/sitemap.xml

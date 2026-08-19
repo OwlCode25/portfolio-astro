@@ -11,7 +11,7 @@ interface Props {
 const {
 	title,
 	description = "Desarrollo de software a medida para empresas y emprendedores: aplicaciones web y móviles, automatización con IA e integración de sistemas.",
-	ogImage = "/android-chrome-512x512.png",
+	ogImage = "/og-image.png",
 } = Astro.props;
 
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : null;
@@ -46,7 +46,7 @@ const jsonLd = {
 		{canonical && <meta property="og:url" content={canonical} />}
 		<meta property="og:image" content={ogImageUrl} />
 		<meta property="og:locale" content="es" />
-		<meta name="twitter:card" content="summary" />
+		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="twitter:title" content={title} />
 		<meta name="twitter:description" content={description} />
 		<meta name="twitter:image" content={ogImageUrl} />
