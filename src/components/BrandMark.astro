@@ -76,6 +76,10 @@ const { class: className = "" } = Astro.props;
   const PUPIL_DRIFT = 15;
   const BLINK_MIN_MS = 4000;
   const BLINK_MAX_MS = 9000;
+  /** One full turn of the dotted orbit ring. Lower = faster sweep. */
+  const ORBIT_PERIOD_MS = 20000;
+  /** When the ring has finished swinging into place and can start turning. */
+  const ORBIT_SETTLED_MS = 1100;
 
   function wakeBrandMark(mark: HTMLElement) {
     const owl = mark.querySelector<SVGSVGElement>("[data-owl-mark]");
@@ -109,6 +113,7 @@ const { class: className = "" } = Astro.props;
     mark.dataset.wake = "on";
 
     let awake = false;
+    let ringAwake = false;
     let started = false;
     let inView = false;
     let blinkTimer = 0;
@@ -128,7 +133,13 @@ const { class: className = "" } = Astro.props;
       },
     })
       .add(glow, { opacity: 0.85, scale: 1, duration: 900 }, 0)
-      .add(orbit, { opacity: 1, scale: 1, rotate: 0, duration: 1100 }, 0)
+      .add(orbit, { opacity: 1, scale: 1, rotate: 0, duration: ORBIT_SETTLED_MS }, 0)
+      // The ring starts turning the moment it lands, rather than idling until
+      // the rest of the entrance (and the eyes' spring) has finished.
+      .call(() => {
+        ringAwake = true;
+        syncAmbient();
+      }, ORBIT_SETTLED_MS)
       .add(wrap, { opacity: 1, scale: 1, duration: 900 }, 120)
       .add(
         blurAmount,
@@ -172,7 +183,7 @@ const { class: className = "" } = Astro.props;
 
     const orbitSpin = animate(orbit, {
       rotate: [0, 360],
-      duration: 30000,
+      duration: ORBIT_PERIOD_MS,
       ease: "linear",
       loop: true,
       autoplay: false,
@@ -263,17 +274,24 @@ const { class: className = "" } = Astro.props;
     }
 
     // Nothing ambient runs while the mark is offscreen or the tab is hidden.
+    // The ring is gated separately: it turns from the moment it lands, while
+    // the glow, gaze and blink wait for the eyes to finish opening.
     function syncAmbient() {
-      const run = awake && inView && !document.hidden;
-      if (run) {
+      const visible = inView && !document.hidden;
+
+      if (ringAwake && visible) {
         orbit.style.willChange = "transform";
         orbitSpin.play();
+      } else {
+        orbit.style.willChange = "";
+        orbitSpin.pause();
+      }
+
+      if (awake && visible) {
         glowBreath.play();
         window.addEventListener("pointermove", trackPointer, { passive: true });
         scheduleBlink();
       } else {
-        orbit.style.willChange = "";
-        orbitSpin.pause();
         glowBreath.pause();
         window.removeEventListener("pointermove", trackPointer);
         window.clearTimeout(blinkTimer);
@@ -284,6 +302,7 @@ const { class: className = "" } = Astro.props;
     // markup back exactly as it was authored.
     function rest() {
       awake = false;
+      ringAwake = false;
       syncAmbient();
       observer.disconnect();
       entrance.pause();
