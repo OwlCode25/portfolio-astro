@@ -1,5 +1,5 @@
 ---
-import OwlIcon from "./OwlIcon.astro";
+import BrandMark from "./BrandMark.astro";
 ---
 
 <section class="relative z-10 mt-6 sm:mt-8 md:mt-10 px-4 sm:px-6 md:px-8 lg:px-10 max-w-screen-xl mx-auto animate-expand-vertically">
@@ -46,18 +46,7 @@ import OwlIcon from "./OwlIcon.astro";
 
     <!-- Right column: brand mark -->
     <div class="w-full sm:w-2/3 md:w-1/2 lg:w-2/5 order-1 lg:order-2 flex justify-center items-center mb-8 lg:mb-0">
-      <div class="brand-mark w-48 sm:w-56 md:w-64 lg:w-80 aspect-square relative overflow-hidden rounded-full shadow-lg ring-2 ring-brand-accent/30 bg-surface flex items-center justify-center">
-        <div class="brand-mark-glow absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(122,162,247,0.14),transparent_70%)]"></div>
-        <svg class="brand-mark-orbit absolute inset-3" viewBox="0 0 100 100" fill="none" aria-hidden="true">
-          <circle cx="50" cy="50" r="47" stroke="#7AA2F7" stroke-opacity="0.3" stroke-width="1" stroke-dasharray="3 9" stroke-linecap="round" />
-          <circle cx="50" cy="3" r="2.2" fill="#7AA2F7" />
-        </svg>
-        <OwlIcon
-          width="220"
-          height="220"
-          class="relative w-1/2 sm:w-[55%] h-auto drop-shadow-[0_12px_28px_rgba(122,162,247,0.35)] hover:scale-105 transition-all duration-300"
-        />
-      </div>
+      <BrandMark class="w-48 sm:w-56 md:w-64 lg:w-80" />
     </div>
   </div>
 </section>
@@ -78,28 +67,8 @@ import OwlIcon from "./OwlIcon.astro";
     }
   }
 
-  .brand-mark-glow {
-    animation: brandGlow 4s ease-in-out infinite;
-  }
-
-  .brand-mark-orbit {
-    animation: brandOrbit 16s linear infinite;
-    transform-origin: center;
-  }
-
-  @keyframes brandGlow {
-    0%, 100% { opacity: 0.65; transform: scale(1); }
-    50% { opacity: 1; transform: scale(1.08); }
-  }
-
-  @keyframes brandOrbit {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-  }
-
   @media (prefers-reduced-motion: reduce) {
-    .brand-mark-glow,
-    .brand-mark-orbit {
+    .animate-expand-vertically {
       animation: none;
     }
   }

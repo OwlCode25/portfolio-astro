@@ -1,0 +1,360 @@
+---
+import OwlIcon from "./OwlIcon.astro";
+
+export interface Props {
+  class?: string;
+}
+
+const { class: className = "" } = Astro.props;
+---
+
+<div
+  class:list={[
+    "brand-mark relative aspect-square flex items-center justify-center overflow-hidden rounded-full shadow-lg ring-2 ring-brand-accent/30 bg-surface",
+    className,
+  ]}
+  data-brand-mark
+>
+  <div
+    class="brand-mark-glow absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(122,162,247,0.14),transparent_70%)]"
+  >
+  </div>
+
+  <svg
+    class="brand-mark-orbit absolute inset-3"
+    viewBox="0 0 100 100"
+    fill="none"
+    aria-hidden="true"
+  >
+    <circle
+      cx="50"
+      cy="50"
+      r="47"
+      stroke="#7AA2F7"
+      stroke-opacity="0.3"
+      stroke-width="1"
+      stroke-dasharray="3 9"
+      stroke-linecap="round"></circle>
+    <circle cx="50" cy="3" r="2.2" fill="#7AA2F7"></circle>
+  </svg>
+
+  <div class="brand-mark-owl relative w-1/2 sm:w-[55%]">
+    <OwlIcon
+      width="220"
+      height="220"
+      class="w-full h-auto drop-shadow-[0_12px_28px_rgba(122,162,247,0.35)]"
+    />
+  </div>
+</div>
+
+<script is:inline>
+  // Runs during parse, ahead of the module below, so the mark is never painted
+  // in its resting state and then re-animated from zero. The failsafe reveals
+  // it anyway if the module never boots (bundle blocked, runtime error).
+  (function () {
+    var mark = document.currentScript.previousElementSibling;
+    if (!mark || !mark.hasAttribute("data-brand-mark")) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    mark.dataset.wake = "pending";
+    window.setTimeout(function () {
+      if (mark.dataset.wake === "pending") mark.dataset.wake = "off";
+    }, 1500);
+  })();
+</script>
+
+<script>
+  import {
+    animate,
+    createAnimatable,
+    spring,
+    createTimeline,
+    stagger,
+    utils,
+  } from "animejs";
+
+  /** Max pupil travel, in user units of the isotipo's 541.88-wide viewBox. */
+  const PUPIL_DRIFT = 15;
+  const BLINK_MIN_MS = 4000;
+  const BLINK_MAX_MS = 9000;
+
+  function wakeBrandMark(mark: HTMLElement) {
+    const owl = mark.querySelector<SVGSVGElement>("[data-owl-mark]");
+    const wrap = mark.querySelector<HTMLElement>(".brand-mark-owl");
+    const orbit = mark.querySelector<SVGSVGElement>(".brand-mark-orbit");
+    const glow = mark.querySelector<HTMLElement>(".brand-mark-glow");
+    if (!owl || !wrap || !orbit || !glow) return;
+
+    const parts = (name: string) =>
+      Array.from(owl.querySelectorAll<SVGElement>(`[data-owl="${name}"]`));
+
+    const lids = parts("blink");
+    const pupils = parts("pupil");
+    const wingTips = parts("wing-tip");
+    const body = parts("body");
+    const silhouette = [...parts("horn"), ...parts("crest")];
+    const plumage = [...parts("wing"), ...wingTips];
+    const face = [...parts("brow"), ...parts("eye"), ...parts("beak")];
+
+    // Hide only now that we know we can animate: the markup's default state is
+    // the finished one, so a failed script leaves a complete logo behind.
+    utils.set([glow, orbit, wrap], { opacity: 0 });
+    utils.set(glow, { scale: 0.72 });
+    utils.set(orbit, { scale: 0.84, rotate: -95 });
+    utils.set(wrap, { scale: 0.9 });
+    utils.set(silhouette, { opacity: 0, translateY: -22 });
+    utils.set(plumage, { opacity: 0, translateY: 18 });
+    utils.set(body, { opacity: 0, translateY: 12 });
+    utils.set(face, { opacity: 0 });
+    utils.set(lids, { opacity: 0, scale: 0 });
+    mark.dataset.wake = "on";
+
+    let awake = false;
+    let started = false;
+    let inView = false;
+    let blinkTimer = 0;
+
+    // Blur rides a plain object and is written by hand: the inner <svg> already
+    // carries a Tailwind drop-shadow filter, and animating `filter` on it
+    // directly would overwrite that shadow.
+    const blurAmount = { px: 14 };
+
+    const entrance = createTimeline({
+      autoplay: false,
+      defaults: { ease: "outExpo" },
+      onComplete: () => {
+        awake = true;
+        wrap.style.willChange = "";
+        syncAmbient();
+      },
+    })
+      .add(glow, { opacity: 0.85, scale: 1, duration: 900 }, 0)
+      .add(orbit, { opacity: 1, scale: 1, rotate: 0, duration: 1100 }, 0)
+      .add(wrap, { opacity: 1, scale: 1, duration: 900 }, 120)
+      .add(
+        blurAmount,
+        {
+          px: 0,
+          duration: 820,
+          onUpdate: () => {
+            wrap.style.filter = `blur(${blurAmount.px}px)`;
+          },
+          onComplete: () => {
+            wrap.style.filter = "";
+          },
+        },
+        120,
+      )
+      .add(
+        silhouette,
+        { opacity: 1, translateY: 0, duration: 760, delay: stagger(55) },
+        240,
+      )
+      .add(
+        plumage,
+        { opacity: 1, translateY: 0, duration: 780, delay: stagger(70) },
+        380,
+      )
+      .add(body, { opacity: 1, translateY: 0, duration: 700 }, 430)
+      .add(face, { opacity: 1, duration: 520, delay: stagger(45) }, 540)
+      // The eyes open last, and overshoot — this is the beat the whole
+      // sequence exists for.
+      .add(
+        lids,
+        {
+          opacity: 1,
+          scale: 1,
+          duration: 900,
+          ease: spring({ stiffness: 140, damping: 11 }),
+        },
+        760,
+      )
+      .add(glow, { opacity: [1, 0.8], duration: 700, ease: "inOutSine" }, 1000);
+
+    const orbitSpin = animate(orbit, {
+      rotate: [0, 360],
+      duration: 30000,
+      ease: "linear",
+      loop: true,
+      autoplay: false,
+    });
+
+    const glowBreath = animate(glow, {
+      opacity: [0.8, 1],
+      scale: [1, 1.05],
+      duration: 4200,
+      ease: "inOutSine",
+      loop: true,
+      alternate: true,
+      autoplay: false,
+    });
+
+    // The owl follows the visitor. Tracking lives on the inner pupil group so
+    // it never contends with the blink, which scales the wrapper.
+    const gaze = createAnimatable(pupils, {
+      x: { duration: 480, ease: "outQuad" },
+      y: { duration: 480, ease: "outQuad" },
+    });
+
+    let gazePending = false;
+    let pointerX = 0;
+    let pointerY = 0;
+
+    function applyGaze() {
+      gazePending = false;
+      const box = mark.getBoundingClientRect();
+      if (!box.width) return;
+      // Normalise against the mark's own radius, then clamp to the unit circle
+      // so diagonal angles don't push the pupils further than straight ones.
+      let dx = (pointerX - (box.left + box.width / 2)) / (box.width / 2);
+      let dy = (pointerY - (box.top + box.height / 2)) / (box.height / 2);
+      const reach = Math.hypot(dx, dy);
+      if (reach > 1) {
+        dx /= reach;
+        dy /= reach;
+      }
+      gaze.x(dx * PUPIL_DRIFT);
+      gaze.y(dy * PUPIL_DRIFT);
+    }
+
+    function trackPointer(event: PointerEvent) {
+      pointerX = event.clientX;
+      pointerY = event.clientY;
+      if (gazePending) return;
+      gazePending = true;
+      requestAnimationFrame(applyGaze);
+    }
+
+    function blink() {
+      animate(lids, {
+        scaleY: [
+          { to: 0.06, duration: 80, ease: "inQuad" },
+          { to: 1, duration: 150, ease: "outQuad" },
+        ],
+        delay: stagger(28),
+      });
+    }
+
+    function scheduleBlink() {
+      window.clearTimeout(blinkTimer);
+      blinkTimer = window.setTimeout(
+        () => {
+          blink();
+          scheduleBlink();
+        },
+        BLINK_MIN_MS + Math.random() * (BLINK_MAX_MS - BLINK_MIN_MS),
+      );
+    }
+
+    function lean(active: boolean) {
+      if (!awake) return;
+      animate(wrap, {
+        scale: active ? 1.045 : 1,
+        duration: 420,
+        ease: "outQuad",
+      });
+      if (!active) return;
+      animate(wingTips, {
+        rotate: [
+          { to: -5, duration: 180, ease: "outQuad" },
+          { to: 0, duration: 460, ease: spring({ stiffness: 90, damping: 8 }) },
+        ],
+        delay: stagger(60),
+      });
+    }
+
+    // Nothing ambient runs while the mark is offscreen or the tab is hidden.
+    function syncAmbient() {
+      const run = awake && inView && !document.hidden;
+      if (run) {
+        orbit.style.willChange = "transform";
+        orbitSpin.play();
+        glowBreath.play();
+        window.addEventListener("pointermove", trackPointer, { passive: true });
+        scheduleBlink();
+      } else {
+        orbit.style.willChange = "";
+        orbitSpin.pause();
+        glowBreath.pause();
+        window.removeEventListener("pointermove", trackPointer);
+        window.clearTimeout(blinkTimer);
+      }
+    }
+
+    // Full teardown: stop every animation, drop every listener, and hand the
+    // markup back exactly as it was authored.
+    function rest() {
+      awake = false;
+      syncAmbient();
+      observer.disconnect();
+      entrance.pause();
+      document.removeEventListener("visibilitychange", syncAmbient);
+      mark.removeEventListener("pointerenter", onEnter);
+      mark.removeEventListener("pointerleave", onLeave);
+      const animated = [glow, orbit, wrap, ...lids, ...pupils, ...plumage, ...face, ...silhouette, ...body];
+      utils.remove(animated);
+      for (const el of animated) el.removeAttribute("style");
+      mark.dataset.wake = "off";
+    }
+
+    const onEnter = () => lean(true);
+    const onLeave = () => lean(false);
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        inView = entries.some((entry) => entry.isIntersecting);
+        if (inView && !started) {
+          started = true;
+          wrap.style.willChange = "transform, filter";
+          entrance.play();
+        }
+        syncAmbient();
+      },
+      { threshold: 0.2 },
+    );
+
+    observer.observe(mark);
+    document.addEventListener("visibilitychange", syncAmbient);
+    mark.addEventListener("pointerenter", onEnter);
+    mark.addEventListener("pointerleave", onLeave);
+
+    return rest;
+  }
+
+  // The motion preference is watched for the life of the page, in both
+  // directions: turning it on tears the animation down, turning it back off
+  // builds it again. Watching from out here means the listener still exists
+  // when the page loaded with reduced motion already enabled.
+  function observeMotionPreference(mark: HTMLElement) {
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let teardown: (() => void) | null = null;
+
+    function sync() {
+      if (reduceMotion.matches) {
+        teardown?.();
+        teardown = null;
+        mark.dataset.wake = "off";
+      } else if (!teardown) {
+        teardown = wakeBrandMark(mark) ?? null;
+      }
+    }
+
+    reduceMotion.addEventListener("change", sync);
+    sync();
+  }
+
+  for (const mark of document.querySelectorAll<HTMLElement>("[data-brand-mark]")) {
+    observeMotionPreference(mark);
+  }
+</script>
+
+<style>
+  .brand-mark[data-wake="pending"] .brand-mark-glow,
+  .brand-mark[data-wake="pending"] .brand-mark-orbit,
+  .brand-mark[data-wake="pending"] .brand-mark-owl {
+    opacity: 0;
+  }
+
+  .brand-mark-orbit {
+    transform-origin: center;
+  }
+</style>
