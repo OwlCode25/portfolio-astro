@@ -14,49 +14,97 @@
         </svg>
       </div>
     </div>
-    <div class="flex flex-col lg:flex-row items-start mt-10 relative px-16">
+    <div class="flex flex-col lg:flex-row items-start mt-10 px-5 sm:px-10 lg:px-16">
       <ul id="experience-list">
-        <li class="text-ink font-medium list-disc">Keep Pushing Business</li>
+        <li class="timeline-entry text-ink font-medium">Keep Pushing Business</li>
         <li class="mb-4 text-brand-accent font-bold text-xs uppercase ml-6 mt-2">Agosto 2024 - Actualidad</li>
         <li class="mb-4 text-ink-muted ml-6 text-sm leading-relaxed">En este puesto he trabajado en el desarrollo de aplicaciones personalizadas para clientes utilizando Flask, creando soluciones a medida que cumplen con requisitos específicos. También me he centrado en la optimización de flujos de trabajo mediante el uso de Apache Airflow, mejorando la automatización de procesos. Además, he diseñado y desarrollado nuevos módulos para Odoo, adaptando y ampliando la funcionalidad de la plataforma según las necesidades de cada cliente.</li>
-        <li class="text-ink font-medium list-disc">Expert Choice</li>
+        <li class="timeline-entry text-ink font-medium">Expert Choice</li>
         <li class="mb-4 text-brand-accent font-bold text-xs uppercase ml-6 mt-2">Marzo 2024 - Abril 2024</li>
         <li class="mb-4 text-ink-muted ml-6 text-sm leading-relaxed">Durante mi breve estancia en la empresa, me dediqué al análisis de los sistemas internos, centrándose especialmente en los portales propiedad de la empresa. Llevé a cabo diversas pruebas de funcionalidad, calidad, diseño y otros aspectos, con el objetivo de desarrollar un portal que pueda ser replicado para servir a un mayor número de clientes.</li>
-        <li class="text-ink font-medium list-disc">Ilustre Municipalidad de Maipú</li>
+        <li class="timeline-entry text-ink font-medium">Ilustre Municipalidad de Maipú</li>
         <li class="mb-4 text-brand-accent font-bold text-xs uppercase ml-6 mt-2">Junio 2023 - Febrero 2024</li>
         <li class="text-ink-muted ml-6 text-sm leading-relaxed">Durante este periodo, me concentré en el desarrollo de aplicaciones web, abordando tanto proyectos monolíticos como aquellos basados en arquitecturas REST. Mi participación fue integral en todas las etapas del ciclo de desarrollo, desde la conceptualización hasta la implementación final. En particular, desarrollé aplicaciones para automatizar tareas en las Direcciones, empleando y evaluando modelos de inteligencia artificial como ChatGPT, Mixtral y LLAMA 2. Para llevar a cabo estas labores, hice uso de una amplia gama de herramientas tecnológicas, tales como servidores web como IIS y Nginx, así como plataformas como Linux y Windows Server. Asimismo, trabajé con frameworks como Flask y .NET, y bases de datos como SQL Server, con el objetivo de asegurar el óptimo funcionamiento y la seguridad de las aplicaciones desarrolladas.</li>
       </ul>
-      <div id="line" class="absolute border-r border-brand-accent/30 h-full top-0"></div>
     </div>
   </div>
 </div>
 
 <script>
-  function drawLines() {
-    const experienceList = document.getElementById('experience-list');
-    const points = experienceList.querySelectorAll('li.list-disc');
-    const line = document.getElementById('line');
+  // The rail's horizontal position is owned entirely by CSS (--rail-x), so it
+  // cannot drift from the dots. All this does is span it between the first and
+  // last dot, and it reads the dot's own geometry off the pseudo-element
+  // rather than repeating any of those numbers here.
+  function sizeRail() {
+    const list = document.getElementById("experience-list");
+    if (!list) return;
 
-    if (points.length < 2) {
-      line.style.display = 'none';
+    const entries = list.querySelectorAll<HTMLElement>("li.timeline-entry");
+    if (entries.length < 2) {
+      list.style.setProperty("--rail-height", "0px");
       return;
     }
 
-    const firstPoint = points[0] as HTMLElement;
-    const lastPoint = points[points.length - 1] as HTMLElement;
-    const firstPointTop = firstPoint.offsetTop + firstPoint.offsetHeight / 2;
-    const lastPointTop = lastPoint.offsetTop + lastPoint.offsetHeight / 2;
-    const lineHeight = lastPointTop - firstPointTop;
+    const first = entries[0];
+    const last = entries[entries.length - 1];
+    const dot = getComputedStyle(first, "::before");
+    const dotCentre = parseFloat(dot.top) + parseFloat(dot.height) / 2;
 
-    line.style.top = `${firstPointTop}px`;
-    line.style.height = `${lineHeight}px`;
-    
-    const containerLeftOffset = experienceList.offsetLeft;
-    const lineLeftOffset = 12.6; 
-    line.style.left = `${containerLeftOffset - lineLeftOffset}px`;
+    list.style.setProperty("--rail-top", `${first.offsetTop + dotCentre}px`);
+    list.style.setProperty("--rail-height", `${last.offsetTop - first.offsetTop}px`);
   }
 
-  drawLines();
-
-  window.addEventListener('resize', drawLines);
+  sizeRail();
+  window.addEventListener("resize", sizeRail);
+  // Web fonts land after first paint and change the line box the dot sits on.
+  document.fonts?.ready.then(sizeRail);
 </script>
+
+<style>
+  #experience-list {
+    /* Single source of truth: the dot and the rail both centre on --rail-x,
+       measured from the list's own left edge. Nothing may hardcode a position
+       independently — that is exactly how they drifted apart before. */
+    --rail-x: 5px;
+    --rail-pad: 26px;
+    --dot: 9px;
+
+    position: relative;
+    list-style: none;
+    padding-left: var(--rail-pad);
+  }
+
+  /* The descriptions ran to ~179 characters per line on a wide screen, well
+     past the 65-75 the eye can track without losing its place on the return
+     sweep. `ch` resolves per element, so each row caps against its own size. */
+  #experience-list li {
+    max-width: 68ch;
+  }
+
+  #experience-list::before {
+    content: "";
+    position: absolute;
+    left: calc(var(--rail-x) - 0.5px);
+    width: 1px;
+    top: var(--rail-top, 0px);
+    height: var(--rail-height, 0px);
+    background: theme("colors.brand.accent / 30%");
+  }
+
+  #experience-list li.timeline-entry {
+    position: relative;
+    line-height: 1.5;
+  }
+
+  #experience-list li.timeline-entry::before {
+    content: "";
+    position: absolute;
+    /* Offset back out of the list padding so this lands on --rail-x too. */
+    left: calc(var(--rail-x) - var(--rail-pad) - var(--dot) / 2);
+    top: calc(0.75em - var(--dot) / 2);
+    width: var(--dot);
+    height: var(--dot);
+    border-radius: 9999px;
+    background: theme("colors.brand.accent");
+  }
+</style>
