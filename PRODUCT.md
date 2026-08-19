@@ -8,11 +8,11 @@ web
 
 ## Users
 
-Primary users are decision-makers at PyMEs (small/medium businesses) and startups who need custom software, AI-driven automation, or systems integration but lack the internal team to build it themselves. They land on the site evaluating whether to hire Germán directly for a project (vs. an agency or another freelancer).
+Primary users are decision-makers at PyMEs (small/medium businesses) and startups who need custom software, AI-driven automation, or systems integration but lack the internal team to build it themselves. They land on the site evaluating whether to hire OwlCode directly for a project (vs. an agency or another freelancer).
 
 ## Product Purpose
 
-A personal freelance portfolio for Germán Astudillo (OwlCode25), a software developer. Its purpose is to convert visiting PyMEs/startups into contact-form leads for three service lines: custom application development (web/mobile/desktop), AI automation (agents, bots, workflow automation), and systems integration (APIs, ERPs/CRMs, data migration). Success is a submitted contact request tied to a specific service interest.
+A freelance software development portfolio published under the name OwlCode. Its purpose is to convert visiting PyMEs/startups into contact-form leads for three service lines: custom application development (web/mobile/desktop), AI automation (agents, bots, workflow automation), and systems integration (APIs, ERPs/CRMs, data migration). Success is a submitted contact request tied to a specific service interest.
 
 ## Positioning
 
@@ -34,8 +34,8 @@ Full-stack development plus AI automation delivered end-to-end by a single point
 
 ## Brand Commitments
 
-- Name: Germán Astudillo, also goes by "OwlCode25".
-- Personal downloadable CV asset exists (`src/assets/Germán_Astudillo_CV.pdf`) and a personal logo asset (`LogoG.png`).
+- The site presents itself as **OwlCode** only. The owner's personal name must not appear in visible copy, page titles, or structured data — that was a deliberate decision, not an oversight. The GitHub handle `OwlCode25` and the LinkedIn profile URL are the remaining exceptions, kept for credibility.
+- Unused personal assets still sit in `src/assets/` (a CV PDF and `LogoG.png`); neither is referenced by any page.
 - Tone in existing copy is direct and outcome-focused ("para que tu equipo deje de perder tiempo en tareas manuales"), not generic/corporate.
 
 ## Evidence on Hand
