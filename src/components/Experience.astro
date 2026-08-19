@@ -18,13 +18,13 @@
       <ul id="experience-list">
         <li class="timeline-entry text-ink font-medium">Keep Pushing Business</li>
         <li class="mb-4 text-brand-accent font-bold text-xs uppercase ml-6 mt-2">Agosto 2024 - Actualidad</li>
-        <li class="mb-4 text-ink-muted ml-6 text-sm leading-relaxed">En este puesto he trabajado en el desarrollo de aplicaciones personalizadas para clientes utilizando Flask, creando soluciones a medida que cumplen con requisitos específicos. También me he centrado en la optimización de flujos de trabajo mediante el uso de Apache Airflow, mejorando la automatización de procesos. Además, he diseñado y desarrollado nuevos módulos para Odoo, adaptando y ampliando la funcionalidad de la plataforma según las necesidades de cada cliente.</li>
+        <li class="timeline-detail mb-4 text-ink-muted ml-6 text-sm leading-relaxed">En este puesto he trabajado en el desarrollo de aplicaciones personalizadas para clientes utilizando Flask, creando soluciones a medida que cumplen con requisitos específicos. También me he centrado en la optimización de flujos de trabajo mediante el uso de Apache Airflow, mejorando la automatización de procesos. Además, he diseñado y desarrollado nuevos módulos para Odoo, adaptando y ampliando la funcionalidad de la plataforma según las necesidades de cada cliente.</li>
         <li class="timeline-entry text-ink font-medium">Expert Choice</li>
         <li class="mb-4 text-brand-accent font-bold text-xs uppercase ml-6 mt-2">Marzo 2024 - Abril 2024</li>
-        <li class="mb-4 text-ink-muted ml-6 text-sm leading-relaxed">Durante mi breve estancia en la empresa, me dediqué al análisis de los sistemas internos, centrándose especialmente en los portales propiedad de la empresa. Llevé a cabo diversas pruebas de funcionalidad, calidad, diseño y otros aspectos, con el objetivo de desarrollar un portal que pueda ser replicado para servir a un mayor número de clientes.</li>
+        <li class="timeline-detail mb-4 text-ink-muted ml-6 text-sm leading-relaxed">Durante mi breve estancia en la empresa, me dediqué al análisis de los sistemas internos, centrándose especialmente en los portales propiedad de la empresa. Llevé a cabo diversas pruebas de funcionalidad, calidad, diseño y otros aspectos, con el objetivo de desarrollar un portal que pueda ser replicado para servir a un mayor número de clientes.</li>
         <li class="timeline-entry text-ink font-medium">Ilustre Municipalidad de Maipú</li>
         <li class="mb-4 text-brand-accent font-bold text-xs uppercase ml-6 mt-2">Junio 2023 - Febrero 2024</li>
-        <li class="text-ink-muted ml-6 text-sm leading-relaxed">Durante este periodo, me concentré en el desarrollo de aplicaciones web, abordando tanto proyectos monolíticos como aquellos basados en arquitecturas REST. Mi participación fue integral en todas las etapas del ciclo de desarrollo, desde la conceptualización hasta la implementación final. En particular, desarrollé aplicaciones para automatizar tareas en las Direcciones, empleando y evaluando modelos de inteligencia artificial como ChatGPT, Mixtral y LLAMA 2. Para llevar a cabo estas labores, hice uso de una amplia gama de herramientas tecnológicas, tales como servidores web como IIS y Nginx, así como plataformas como Linux y Windows Server. Asimismo, trabajé con frameworks como Flask y .NET, y bases de datos como SQL Server, con el objetivo de asegurar el óptimo funcionamiento y la seguridad de las aplicaciones desarrolladas.</li>
+        <li class="timeline-detail text-ink-muted ml-6 text-sm leading-relaxed">Durante este periodo, me concentré en el desarrollo de aplicaciones web, abordando tanto proyectos monolíticos como aquellos basados en arquitecturas REST. Mi participación fue integral en todas las etapas del ciclo de desarrollo, desde la conceptualización hasta la implementación final. En particular, desarrollé aplicaciones para automatizar tareas en las Direcciones, empleando y evaluando modelos de inteligencia artificial como ChatGPT, Mixtral y LLAMA 2. Para llevar a cabo estas labores, hice uso de una amplia gama de herramientas tecnológicas, tales como servidores web como IIS y Nginx, así como plataformas como Linux y Windows Server. Asimismo, trabajé con frameworks como Flask y .NET, y bases de datos como SQL Server, con el objetivo de asegurar el óptimo funcionamiento y la seguridad de las aplicaciones desarrolladas.</li>
       </ul>
     </div>
   </div>
@@ -45,13 +45,17 @@
       return;
     }
 
-    const first = entries[0];
-    const last = entries[entries.length - 1];
-    const dot = getComputedStyle(first, "::before");
-    const dotCentre = parseFloat(dot.top) + parseFloat(dot.height) / 2;
+    // Measured per entry rather than once: assuming both dots sit at the same
+    // offset inside their row happens to hold today, but it would break
+    // silently the moment one entry got a different size.
+    const dotCentre = (entry: HTMLElement) => {
+      const dot = getComputedStyle(entry, "::before");
+      return entry.offsetTop + parseFloat(dot.top) + parseFloat(dot.height) / 2;
+    };
 
-    list.style.setProperty("--rail-top", `${first.offsetTop + dotCentre}px`);
-    list.style.setProperty("--rail-height", `${last.offsetTop - first.offsetTop}px`);
+    const top = dotCentre(entries[0]);
+    list.style.setProperty("--rail-top", `${top}px`);
+    list.style.setProperty("--rail-height", `${dotCentre(entries[entries.length - 1]) - top}px`);
   }
 
   sizeRail();
@@ -76,8 +80,9 @@
 
   /* The descriptions ran to ~179 characters per line on a wide screen, well
      past the 65-75 the eye can track without losing its place on the return
-     sweep. `ch` resolves per element, so each row caps against its own size. */
-  #experience-list li {
+     sweep. Scoped to the prose rows only: titles and dates are short, and a
+     measure written for paragraphs has no business wrapping them. */
+  #experience-list li.timeline-detail {
     max-width: 68ch;
   }
 
