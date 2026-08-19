@@ -34,7 +34,7 @@ Full-stack development plus AI automation delivered end-to-end by a single point
 
 ## Brand Commitments
 
-- The site presents itself as **OwlCode** only. The owner's personal name must not appear in visible copy, page titles, or structured data — that was a deliberate decision, not an oversight. The GitHub handle `OwlCode25` and the LinkedIn profile URL are the remaining exceptions, kept for credibility.
+- The site presents itself as **OwlCode** only. The owner's personal name must not appear in visible copy, page titles, or structured data — that was a deliberate decision, not an oversight. The LinkedIn profile was removed for the same reason: its URL contained the name. The GitHub handle `OwlCode25` is the one remaining identity signal.
 - Unused personal assets still sit in `src/assets/` (a CV PDF and `LogoG.png`); neither is referenced by any page.
 - Tone in existing copy is direct and outcome-focused ("para que tu equipo deje de perder tiempo en tareas manuales"), not generic/corporate.
 
