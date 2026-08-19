@@ -71,7 +71,11 @@ const navLinks = [
 ];
 ---
 
-<nav class="bg-blueprint p-3 sm:p-4 md:p-6 border-b border-brand-accent/15 w-full animate-fade-in-left sticky top-0 z-50">
+<!-- No entrance animation on the bar itself: those utilities leave a
+     permanent `transform` behind, which would make this element the
+     containing block for the fixed mobile sheet and anchor the sheet to the
+     navbar instead of the viewport. -->
+<nav class="bg-blueprint p-3 sm:p-4 md:p-6 border-b border-brand-accent/15 w-full sticky top-0 z-50">
   <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto px-2 sm:px-3 md:px-4">
     <a href="/" class="flex items-center py-1">
       <img src={logo} alt="OwlCode" class="h-8 sm:h-10 md:h-12 w-auto" />
@@ -91,21 +95,26 @@ const navLinks = [
         </svg>
       </a>
       <button
-        data-collapse-toggle="navbar-cta"
+        id="navbar-toggle"
         type="button"
-        class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-ink-muted rounded-lg lg:hidden hover:bg-brand-accent/15 hover:text-ink focus:outline-none focus:ring-2 focus:ring-brand-accent transition-colors duration-200"
+        class="nav-toggle inline-flex items-center p-2 w-10 h-10 justify-center text-ink-muted rounded-lg lg:hidden hover:bg-brand-accent/15 hover:text-ink focus:outline-none focus:ring-2 focus:ring-brand-accent transition-colors duration-200"
         aria-controls="navbar-cta"
         aria-expanded="false"
+        aria-label="Abrir menú"
       >
-        <span class="sr-only">Open main menu</span>
-        <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
-          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
-        </svg>
+        <span class="nav-toggle-bars" aria-hidden="true">
+          <span></span><span></span><span></span>
+        </span>
       </button>
     </div>
 
-    <div class="items-center justify-between hidden w-full lg:flex lg:w-auto lg:order-1 transition-all duration-300 ease-in-out" id="navbar-cta">
-      <ul class="flex flex-col font-medium p-4 lg:p-0 mt-4 border border-brand-accent/20 rounded-lg bg-blueprint lg:bg-transparent lg:flex-row lg:space-x-6 lg:mt-0 lg:border-0 gap-2 lg:gap-0">
+    <div id="navbar-scrim" class="nav-scrim lg:hidden"></div>
+
+    <div
+      id="navbar-cta"
+      class="nav-panel items-center justify-between w-full lg:flex lg:w-auto lg:order-1"
+    >
+      <ul class="nav-list flex flex-col font-medium w-full lg:w-auto lg:flex-row lg:space-x-6 gap-1 lg:gap-0">
         {navLinks.map(link => (
           <NavLink
             href={link.href}
@@ -120,112 +129,259 @@ const navLinks = [
 </nav>
 
 <script>
-  // Script para manejar el desplazamiento suave
-  function scrollToSection(event) {
-    const targetId = this.getAttribute("href");
-    if (targetId.startsWith("#")) {
-      event.preventDefault();
-      const targetElement = document.querySelector(targetId);
+  const MOBILE = "(max-width: 1023px)";
 
-      if (targetElement) {
-        const offsetTop = targetElement.offsetTop;
-        const navbarHeight = document.querySelector('nav').offsetHeight;
+  const toggle = document.getElementById("navbar-toggle");
+  const panel = document.getElementById("navbar-cta");
+  const scrim = document.getElementById("navbar-scrim");
+  const isMobile = window.matchMedia(MOBILE);
 
-        window.scrollTo({
-          top: offsetTop - navbarHeight - 20, // Ajuste para que sea visible por debajo del navbar
-          behavior: "smooth"
-        });
-        
-        // Cerrar el menú móvil después de hacer clic
-        const menu = document.getElementById('navbar-cta');
-        const menuButton = document.querySelector('[data-collapse-toggle="navbar-cta"]');
-        if (window.innerWidth < 1024 && menu && menuButton) {
-          menu.classList.add('hidden');
-          menuButton.setAttribute('aria-expanded', 'false');
-        }
-      }
+  function focusables(): HTMLElement[] {
+    if (!panel) return [];
+    return Array.from(
+      panel.querySelectorAll<HTMLElement>('a[href], button:not([disabled])'),
+    );
+  }
+
+  function isOpen() {
+    return toggle?.getAttribute("aria-expanded") === "true";
+  }
+
+  /** Whatever the page had set inline before the sheet locked scrolling. */
+  let previousBodyOverflow = "";
+
+  function openMenu() {
+    if (!toggle || !panel || !scrim) return;
+    toggle.setAttribute("aria-expanded", "true");
+    toggle.setAttribute("aria-label", "Cerrar menú");
+    panel.dataset.open = "true";
+    panel.removeAttribute("inert");
+    scrim.dataset.open = "true";
+    previousBodyOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    focusables()[0]?.focus();
+  }
+
+  function closeMenu(returnFocus = true) {
+    if (!toggle || !panel || !scrim) return;
+    toggle.setAttribute("aria-expanded", "false");
+    toggle.setAttribute("aria-label", "Abrir menú");
+    delete panel.dataset.open;
+    delete scrim.dataset.open;
+    document.body.style.overflow = previousBodyOverflow;
+    if (isMobile.matches) panel.setAttribute("inert", "");
+    // Focus goes back to the control that owns the sheet — never left
+    // stranded on a link that is about to become inert. Callers that pass
+    // `false` are responsible for placing focus somewhere themselves.
+    if (returnFocus) toggle.focus();
+  }
+
+  // The panel is only a dialog below `lg`. Above it, it is an ordinary inline
+  // nav list and must carry neither dialog semantics nor `inert`.
+  function syncViewport() {
+    if (!panel) return;
+    if (isMobile.matches) {
+      panel.setAttribute("role", "dialog");
+      panel.setAttribute("aria-modal", "true");
+      panel.setAttribute("aria-label", "Menú de navegación");
+      if (!isOpen()) panel.setAttribute("inert", "");
+    } else {
+      panel.removeAttribute("role");
+      panel.removeAttribute("aria-modal");
+      panel.removeAttribute("aria-label");
+      panel.removeAttribute("inert");
+      if (isOpen()) closeMenu(false);
     }
   }
 
-  // Navegación mobile toggle con animación
-  document.addEventListener('DOMContentLoaded', () => {
-    const links = document.querySelectorAll('a[href^="#"]');
-    links.forEach(link => {
-      link.addEventListener('click', scrollToSection);
+  toggle?.addEventListener("click", () => (isOpen() ? closeMenu() : openMenu()));
+  scrim?.addEventListener("click", () => closeMenu());
+
+  document.addEventListener("keydown", (event) => {
+    if (!isOpen()) return;
+    if (event.key === "Escape") {
+      closeMenu();
+      return;
+    }
+    if (event.key !== "Tab") return;
+    // Keep focus inside the sheet while it covers the page.
+    const items = focusables();
+    if (!items.length) return;
+    const first = items[0];
+    const last = items[items.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  });
+
+  function scrollToSection(this: HTMLAnchorElement, event: Event) {
+    const targetId = this.getAttribute("href");
+    if (!targetId?.startsWith("#")) return;
+    const target = document.querySelector<HTMLElement>(targetId);
+    if (!target) return;
+
+    event.preventDefault();
+    if (isOpen()) closeMenu(false);
+
+    const navbarHeight = document.querySelector("nav")?.offsetHeight ?? 0;
+    window.scrollTo({
+      top: target.offsetTop - navbarHeight - 20,
+      behavior: "smooth",
     });
 
-    // Toggle para navegación mobile con mejor experiencia de usuario
-    const menuButton = document.querySelector('[data-collapse-toggle="navbar-cta"]');
-    const menu = document.getElementById('navbar-cta');
-    
-    if (menuButton && menu) {
-      menuButton.addEventListener('click', () => {
-        const expanded = menuButton.getAttribute('aria-expanded') === 'true';
-        menuButton.setAttribute('aria-expanded', !expanded);
-        
-        if (expanded) {
-          // Cerrar menú
-          menu.classList.add('animate-fade-out');
-          setTimeout(() => {
-            menu.classList.add('hidden');
-            menu.classList.remove('animate-fade-out');
-          }, 200);
-        } else {
-          // Abrir menú
-          menu.classList.remove('hidden');
-          menu.classList.add('animate-fade-in');
-          setTimeout(() => {
-            menu.classList.remove('animate-fade-in');
-          }, 300);
-        }
-      });
-    }
-    
-    // Manejar cambio de tamaño de ventana para asegurar que el menú sea visible en pantallas grandes
-    window.addEventListener('resize', () => {
-      if (window.innerWidth >= 1024) {
-        menu.classList.remove('hidden');
-      } else if (menuButton.getAttribute('aria-expanded') === 'false') {
-        menu.classList.add('hidden');
-      }
-    });
-  });
+    // Land on the section that was asked for. Without this, marking the sheet
+    // inert while the just-clicked link still holds focus makes the browser
+    // dump focus onto <body>, losing the keyboard user's place entirely.
+    target.setAttribute("tabindex", "-1");
+    target.dataset.scrollTarget = "";
+    target.focus({ preventScroll: true });
+  }
+
+  for (const link of document.querySelectorAll<HTMLAnchorElement>('a[href^="#"]')) {
+    link.addEventListener("click", scrollToSection);
+  }
+
+  isMobile.addEventListener("change", syncViewport);
+  syncViewport();
 </script>
 
 <style>
-  /* Estilos adicionales para animaciones */
-  .animate-fade-in {
-    animation: fadeIn 0.3s ease-in-out;
+  /* Hamburger that folds into an X. Three bars so each one can be
+     transformed independently — a single path could not morph cleanly. */
+  .nav-toggle-bars {
+    position: relative;
+    display: block;
+    width: 20px;
+    height: 14px;
   }
-  
-  .animate-fade-out {
-    animation: fadeOut 0.2s ease-in-out;
+
+  .nav-toggle-bars span {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2px;
+    border-radius: 9999px;
+    background: currentColor;
+    transition:
+      transform 0.34s cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 0.18s ease;
   }
-  
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
+
+  .nav-toggle-bars span:nth-child(1) { top: 0; }
+  .nav-toggle-bars span:nth-child(2) { top: 6px; }
+  .nav-toggle-bars span:nth-child(3) { top: 12px; }
+
+  .nav-toggle[aria-expanded="true"] .nav-toggle-bars span:nth-child(1) {
+    transform: translateY(6px) rotate(45deg);
   }
-  
-  @keyframes fadeOut {
-    from { opacity: 1; transform: translateY(0); }
-    to { opacity: 0; transform: translateY(-10px); }
+  .nav-toggle[aria-expanded="true"] .nav-toggle-bars span:nth-child(2) {
+    opacity: 0;
+    transform: scaleX(0.3);
   }
-  
-  /* Estilos para el menú móvil mejorado */
+  .nav-toggle[aria-expanded="true"] .nav-toggle-bars span:nth-child(3) {
+    transform: translateY(-6px) rotate(-45deg);
+  }
+
+  /* Mobile: the menu is a half-height sheet rising from the bottom edge. */
   @media (max-width: 1023px) {
-    #navbar-cta {
-      max-height: calc(100vh - 80px);
-      overflow-y: auto;
-      position: absolute;
-      top: 100%;
+    .nav-scrim {
+      position: fixed;
+      inset: 0;
+      z-index: 40;
+      background: rgb(17 18 26 / 0.6);
+      backdrop-filter: blur(2px);
+      opacity: 0;
+      /* visibility, not just opacity: a transparent scrim that stays visible
+         would keep swallowing every click on the page underneath it. */
+      visibility: hidden;
+      transition:
+        opacity 0.32s ease,
+        visibility 0s linear 0.32s;
+    }
+
+    .nav-scrim[data-open="true"] {
+      opacity: 1;
+      visibility: visible;
+      transition:
+        opacity 0.32s ease,
+        visibility 0s linear 0s;
+    }
+
+    .nav-panel {
+      position: fixed;
       left: 0;
       right: 0;
-      z-index: 100;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      bottom: 0;
+      z-index: 45;
+      display: flex;
+      height: 50vh;
+      height: 50dvh;
+      padding: 1.25rem 1.5rem calc(1.25rem + env(safe-area-inset-bottom));
+      overflow-y: auto;
+      align-items: flex-start;
+      border-top: 1px solid rgb(122 162 247 / 0.2);
+      border-radius: 8px 8px 0 0;
+      background: theme("colors.blueprint");
+      transform: translateY(100%);
+      visibility: hidden;
+      /* Exit is quicker than entry; the delayed visibility keeps the sheet
+         present until it has finished sliding away. */
+      transition:
+        transform 0.28s cubic-bezier(0.4, 0, 1, 1),
+        visibility 0s linear 0.28s;
+    }
+
+    .nav-panel[data-open="true"] {
+      transform: translateY(0);
+      visibility: visible;
+      transition:
+        transform 0.42s cubic-bezier(0.16, 1, 0.3, 1),
+        visibility 0s linear 0s;
+    }
+
+    /* A half-screen sheet needs real touch targets, not the 10px desktop
+       label size squeezed into 420px of height. */
+    .nav-list :global(a) {
+      min-height: 44px;
+      padding: 0.75rem 0.5rem;
+      font-size: 0.8rem;
+    }
+
+    .nav-list :global(svg) {
+      width: 1.15rem;
+      height: 1.15rem;
+      margin-right: 0.6rem;
     }
   }
-  
+
+  /* A section focused as an in-page navigation landing spot is a cursor move,
+     not a control taking focus, so it must not paint a ring around the whole
+     section. Real controls keep theirs. */
+  :global([data-scroll-target]:focus) {
+    outline: none;
+  }
+
+  /* Opening the sheet moves focus into it, so the ring is now visible to
+     keyboard users. Periwinkle is the system's only accent, focus included. */
+  .nav-list :global(a:focus-visible) {
+    outline: 2px solid theme("colors.brand.accent");
+    outline-offset: 2px;
+    border-radius: 0.375rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nav-panel,
+    .nav-panel[data-open="true"],
+    .nav-scrim,
+    .nav-toggle-bars span {
+      transition-duration: 0.01ms;
+    }
+  }
+
   /* Mejora para dispositivos pequeños */
   @media (max-width: 360px) {
     nav .max-w-screen-xl {
