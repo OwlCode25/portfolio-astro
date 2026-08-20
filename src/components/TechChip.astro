@@ -1,0 +1,63 @@
+---
+export interface Tech {
+  name: string;
+  /** simple-icons path data, drawn on a 24x24 viewBox. */
+  icon?: string;
+  /** Letterform shown when the technology has no simple-icons entry. */
+  mono?: string;
+  link?: string;
+}
+
+export interface Props {
+  tech: Tech;
+  /** Dims the chip for the environment row, which is context rather than a service. */
+  muted?: boolean;
+}
+
+const { tech, muted = false } = Astro.props;
+
+// A chip without a link is still a chip, not a dead anchor.
+const Tag = tech.link ? "a" : "span";
+
+const border = muted
+  ? "border-brand-accent/8 hover:border-brand-accent/20"
+  : "border-brand-accent/15 hover:border-brand-accent/35 hover:bg-brand-accent/6";
+
+// Muted chips warm to plain ink; service chips take the accent, so the eye
+// still reads the top rows as the ones that matter.
+const hue = muted
+  ? "text-ink-muted group-hover:text-ink"
+  : "text-ink-muted group-hover:text-brand-accent";
+---
+
+<Tag
+  href={tech.link}
+  target={tech.link ? "_blank" : undefined}
+  rel={tech.link ? "noopener noreferrer" : undefined}
+  class:list={[
+    "group flex items-center gap-2 bg-surface border rounded px-3 py-2 transition-all duration-200",
+    border,
+  ]}
+>
+  {tech.icon && (
+    <svg viewBox="0 0 24 24" aria-hidden="true" class:list={["w-4 h-4 shrink-0 fill-current transition-colors", hue]}>
+      <path d={tech.icon} />
+    </svg>
+  )}
+
+  {!tech.icon && tech.mono && (
+    <span
+      aria-hidden="true"
+      class:list={["w-4 h-4 shrink-0 grid place-items-center text-[8px] font-bold leading-none transition-colors", hue]}
+    >{tech.mono}</span>
+  )}
+
+  <span class="text-sm text-ink-muted group-hover:text-ink transition-colors whitespace-nowrap">
+    {tech.name}
+  </span>
+
+  <span
+    class:list={["w-1.5 h-1.5 rounded-full shrink-0", muted ? "bg-brand-accent/40" : "bg-brand-accent"]}
+    aria-hidden="true"
+  ></span>
+</Tag>

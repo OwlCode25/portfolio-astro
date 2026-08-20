@@ -1,220 +1,152 @@
 ---
-// TechSkills.astro
-import { Image } from "astro:assets";
+import { icons } from "../data/tech-icons";
+import TechChip from "./TechChip.astro";
 
-// Frontend
-import css from "../assets/css3.jpg";
-import html from "../assets/html5.webp";
-import js from "../assets/javascript.jpg";
-import react from "../assets/react.png";
-
-// Backend
-import flask from "../assets/flask-horizontal.webp";
-import django from "../assets/django-logo.png";
-import fastapi from "../assets/fastapi.png";
-import express from "../assets/express.jpg";
-
-// Herramientas adicionales - Asegúrate de tener estas imágenes en tu directorio de assets
-// o reemplázalas con las rutas correctas a tus imágenes
-import neovim from "../assets/neovim.png";
-import tmux from "../assets/tmux.png";
-import docker from "../assets/docker.png";
-import git from "../assets/git.png";
-import postgres from "../assets/postgres.png";
-import archlinux from "../assets/archlinux.png";
-import alacritty from "../assets/alacritty.png";
-import ulauncher from "../assets/ulauncher.svg";
-
-
-// Interfaz para las tecnologías
+/**
+ * One technology chip.
+ *
+ * `icon` is a simple-icons path string. When a technology has no entry in
+ * simple-icons (Dokploy, Herdr and Hermes Agent are too new to have one),
+ * `mono` carries a short letterform
+ * instead. In a palette this restricted a letter reads as an icon, so the
+ * fallback costs nothing visually.
+ */
 interface Tech {
   name: string;
-  image: ImageMetadata;
-  link: string;
-  description?: string;
-  category: "frontend" | "backend" | "devtools" | "database" | "os";
+  icon?: string;
+  mono?: string;
+  link?: string;
 }
 
-// Definición de todas las tecnologías
-const technologies: Tech[] = [
-  // Frontend
+/**
+ * Kitty has no simple-icons entry, and nothing feline exists there either, so
+ * this is drawn by hand on the same 24x24 grid as the rest: one solid
+ * silhouette with the eyes cut out as reverse subpaths. It is a generic cat,
+ * not a copy of Kitty's mark. Verified legible at the 16px it actually renders
+ * at — the ears are what carry it once the eyes go muddy.
+ */
+const CAT = "M4.6 3.2 L9.9 8.9 A6.3 6.3 0 0 1 14.1 8.9 L19.4 3.2 L18.1 12.2 A6.3 6.3 0 1 1 5.9 12.2 Z M9.7 14.4 a1.3 1.3 0 1 0 .01 0 Z M14.3 14.4 a1.3 1.3 0 1 0 .01 0 Z";
+
+/**
+ * Hermes Agent's mark is a detailed illustration — bangs, an eye, hair strands.
+ * Traced whole it turned to mush at the 16px a chip actually renders at, so
+ * this is only its outer contour, normalised onto the same 24x24 grid as the
+ * rest. What survives at that size is the silhouette and the headband notch,
+ * which is the point: an icon is drawn for its size, not shrunk into it.
+ */
+const HERMES = "M 10.69 1.11 C 9.99 1.22, 9.3 1.38, 9.31 1.44 C 9.32 1.47, 9.62 1.5, 9.97 1.5 C 10.32 1.51, 10.73 1.55, 10.89 1.59 C 12.62 2.04, 14.14 3.92, 14.76 6.39 C 14.91 6.96, 14.91 7.04, 14.77 7.17 C 14.57 7.35, 14.62 7.46, 15 7.65 C 15.19 7.75, 15.33 7.84, 15.32 7.86 C 15.3 7.87, 15.15 7.81, 14.97 7.73 C 14.55 7.52, 14.46 7.33, 14.67 7.09 C 14.82 6.91, 14.82 6.71, 14.67 6.65 C 14.63 6.63, 14.43 6.64, 14.22 6.66 C 13.67 6.72, 13.45 6.99, 13.8 7.19 C 13.93 7.26, 13.97 7.32, 13.97 7.45 C 13.97 7.62, 13.96 7.62, 13.91 7.49 C 13.88 7.42, 13.81 7.34, 13.75 7.33 C 13.63 7.3, 13.59 7.19, 13.46 6.6 C 13.37 6.17, 13.12 5.38, 13.02 5.19 C 12.97 5.09, 12.93 4.99, 12.92 4.95 C 12.91 4.91, 12.8 4.68, 12.68 4.45 C 12.01 3.21, 10.71 2.18, 9.54 1.96 C 9.05 1.87, 8.58 1.85, 8.21 1.93 C 8.08 1.95, 7.99 1.95, 8 1.93 C 8.08 1.8, 7.88 1.85, 7.37 2.07 C 6.15 2.6, 5.07 3.31, 4.21 4.14 C 3.64 4.69, 3.34 5.12, 2.96 5.91 C 2 7.93, 2.06 9.77, 3.11 10.74 C 3.48 11.08, 4.05 11.38, 4.18 11.3 C 4.21 11.28, 4.13 11.12, 4 10.92 C 3.72 10.49, 3.71 10.32, 3.98 10.67 C 4.09 10.81, 4.28 10.99, 4.41 11.08 C 4.66 11.25, 4.65 11.2, 4.57 12.04 C 4.27 15.15, 4.04 16.78, 3.83 17.28 C 3.65 17.69, 3.39 17.9, 3.05 17.9 C 2.67 17.9, 2.42 17.75, 2.24 17.41 C 2.02 17.01, 1.98 16.55, 2.12 16.13 C 2.18 15.95, 2.21 15.79, 2.19 15.77 C 2.13 15.74, 1.83 16.18, 1.68 16.52 C 1.56 16.8, 1.52 17.53, 1.6 17.87 C 1.84 18.86, 2.76 19.37, 3.68 19.03 C 3.96 18.92, 4.11 18.82, 4.43 18.5 C 4.65 18.27, 4.87 18.03, 4.92 17.95 C 5.02 17.82, 5.02 17.82, 4.97 17.99 C 4.82 18.56, 4.37 19.16, 3.93 19.37 C 3.41 19.62, 2.63 19.46, 2.12 18.98 C 1.84 18.72, 1.57 18.28, 1.57 18.08 C 1.57 17.94, 1.47 17.86, 1.43 17.97 C 1.37 18.11, 1.5 18.74, 1.65 19.06 C 1.91 19.64, 2.39 20.04, 3.15 20.34 C 3.5 20.47, 3.51 20.48, 3.58 20.75 C 3.73 21.34, 4.24 21.71, 4.9 21.71 C 5.39 21.72, 5.72 21.56, 6.07 21.17 C 6.35 20.87, 6.37 20.89, 6.24 21.31 C 6.11 21.76, 5.83 22.3, 5.56 22.63 C 5.43 22.79, 5.33 22.94, 5.35 22.96 C 5.37 22.98, 5.92 23, 6.57 23 C 7.72 23, 7.75 22.99, 8.03 22.85 C 8.19 22.77, 8.31 22.73, 8.29 22.76 C 8.27 22.79, 8.28 22.84, 8.31 22.86 C 8.34 22.88, 8.38 22.85, 8.4 22.8 C 8.45 22.66, 8.6 22.69, 8.58 22.84 C 8.57 22.95, 8.59 22.97, 8.74 22.99 C 8.89 23, 8.94 22.98, 8.99 22.87 C 9.1 22.67, 9.67 21.98, 9.73 21.98 C 9.82 21.98, 9.7 22.15, 9.36 22.54 C 9.19 22.73, 9.06 22.91, 9.08 22.94 C 9.09 22.97, 9.22 23, 9.35 23 C 9.57 23, 9.62 22.97, 9.84 22.73 C 9.97 22.58, 10.22 22.31, 10.4 22.13 C 10.68 21.83, 10.72 21.82, 10.76 21.92 C 10.8 22.03, 10.81 22.04, 10.98 21.94 C 11.09 21.89, 11.36 21.73, 11.59 21.58 C 12.05 21.29, 13.08 20.7, 13.41 20.54 C 13.6 20.44, 13.6 20.44, 13.36 20.69 C 13.23 20.82, 13.14 20.95, 13.15 20.97 C 13.17 20.99, 13.35 20.9, 13.55 20.78 C 13.87 20.58, 14.61 20.28, 14.78 20.28 C 14.82 20.28, 14.68 20.37, 14.49 20.49 C 14.05 20.75, 13.57 21.17, 13.34 21.51 C 13.25 21.64, 13.15 21.74, 13.12 21.72 C 13 21.64, 12.56 22.72, 12.63 22.91 C 12.65 22.96, 12.74 23, 12.83 23 C 12.97 23, 13.02 22.96, 13.12 22.76 C 13.27 22.45, 14.31 21.29, 14.71 20.98 C 15.17 20.63, 15.33 20.57, 15.95 20.5 C 16.43 20.45, 16.59 20.45, 16.93 20.53 C 17.16 20.58, 17.42 20.67, 17.51 20.72 C 17.99 21.02, 18.82 21.94, 19.1 22.5 C 19.27 22.84, 19.38 22.83, 19.37 22.48 C 19.36 22.1, 19.17 21.78, 18.62 21.24 C 18.14 20.76, 17.65 20.45, 17.13 20.28 C 16.83 20.18, 16.88 20.17, 17.29 20.23 C 17.96 20.34, 18.57 20.75, 19.02 21.39 C 19.24 21.72, 19.46 22.23, 19.46 22.44 C 19.46 22.52, 19.51 22.63, 19.57 22.68 C 19.72 22.81, 19.81 22.69, 19.77 22.42 C 19.72 22.12, 19.89 21.87, 20.29 21.67 C 21.17 21.22, 21.74 20.68, 22.1 19.97 C 22.63 18.9, 22.57 17.51, 21.97 16.72 C 21.82 16.52, 21.67 16.54, 21.78 16.75 C 21.81 16.81, 21.87 17.08, 21.91 17.35 C 21.97 17.78, 21.97 17.91, 21.88 18.34 C 21.73 19.15, 21.16 20.18, 20.55 20.75 C 20.13 21.14, 20.1 21.11, 20.47 20.62 C 21.13 19.75, 21.42 18.51, 21.28 17.08 C 21.2 16.24, 21.12 15.88, 20.65 14.13 C 20.23 12.57, 19.75 10.52, 19.52 9.26 C 19.27 7.88, 19.05 7.07, 18.69 6.13 C 18.12 4.64, 17.66 3.87, 16.9 3.11 C 15.92 2.13, 14.78 1.53, 13.27 1.19 C 12.6 1.03, 11.42 1, 10.69 1.11";
+
+interface Group {
+  /** Verb-led, in the visitor's language: what they get, not what I install. */
+  headline: string;
+  techs: Tech[];
+}
+
+const groups: Group[] = [
   {
-    name: "HTML5",
-    image: html,
-    link: "https://developer.mozilla.org/es/docs/Web/HTML",
-    description: "Lenguaje de marcado estándar para páginas web.",
-    category: "frontend"
+    headline: "Construyo aplicaciones a medida",
+    techs: [
+      { name: "Python", icon: icons.python, link: "https://www.python.org/" },
+      { name: "Flask", icon: icons.flask, link: "https://flask.palletsprojects.com/" },
+      { name: "Django", icon: icons.django, link: "https://www.djangoproject.com/" },
+      { name: "FastAPI", icon: icons.fastapi, link: "https://fastapi.tiangolo.com/" },
+      { name: "TypeScript", icon: icons.typescript, link: "https://www.typescriptlang.org/" },
+      { name: "Astro", icon: icons.astro, link: "https://astro.build/" },
+      { name: "React", icon: icons.react, link: "https://react.dev/" },
+      { name: "Tailwind", icon: icons.tailwindcss, link: "https://tailwindcss.com/" },
+      { name: "Expo", icon: icons.expo, link: "https://expo.dev/" },
+      { name: "Tauri", icon: icons.tauri, link: "https://tauri.app/" },
+      { name: "Rust", icon: icons.rust, link: "https://www.rust-lang.org/" },
+    ],
   },
   {
-    name: "CSS3",
-    image: css,
-    link: "https://developer.mozilla.org/es/docs/Web/CSS",
-    description: "Lenguaje de estilo para diseñar y presentar documentos HTML.",
-    category: "frontend"
+    headline: "Automatizo procesos que hoy se hacen a mano",
+    techs: [
+      { name: "n8n", icon: icons.n8n, link: "https://n8n.io/" },
+      { name: "Apache Airflow", icon: icons.apacheairflow, link: "https://airflow.apache.org/" },
+      { name: "LangChain", icon: icons.langchain, link: "https://www.langchain.com/" },
+      { name: "Ollama", icon: icons.ollama, link: "https://ollama.com/" },
+      { name: "Hermes Agent", icon: HERMES, link: "https://hermes-agent.nousresearch.com/" },
+    ],
   },
   {
-    name: "JavaScript (ES6+)",
-    image: js,
-    link: "https://developer.mozilla.org/es/docs/Web/JavaScript",
-    description: "Lenguaje de programación que permite crear contenido dinámico en páginas web.",
-    category: "frontend"
+    headline: "Conecto sistemas que no se hablan",
+    techs: [
+      { name: "Odoo", icon: icons.odoo, link: "https://www.odoo.com/" },
+      { name: "PostgreSQL", icon: icons.postgresql, link: "https://www.postgresql.org/" },
+      { name: "SQLite", icon: icons.sqlite, link: "https://www.sqlite.org/" },
+      { name: "APIs REST", mono: "API" },
+    ],
   },
   {
-    name: "React",
-    image: react,
-    link: "https://es.react.dev/",
-    description: "Biblioteca de JavaScript para construir interfaces de usuario interactivas y componentes reutilizables.",
-    category: "frontend"
+    headline: "Despliego y mantengo en producción",
+    techs: [
+      { name: "Docker", icon: icons.docker, link: "https://www.docker.com/" },
+      { name: "Dokploy", mono: "DK", link: "https://dokploy.com/" },
+      { name: "Nginx", icon: icons.nginx, link: "https://nginx.org/" },
+      { name: "Google Cloud", icon: icons.googlecloud, link: "https://cloud.google.com/" },
+      { name: "Vercel", icon: icons.vercel, link: "https://vercel.com/" },
+      { name: "Git", icon: icons.git, link: "https://git-scm.com/" },
+    ],
   },
-  
-  // Backend
-  {
-    name: "Flask",
-    image: flask,
-    link: "https://flask.palletsprojects.com/",
-    description: "Microframework web ligero y flexible para Python que facilita la creación rápida de aplicaciones web.",
-    category: "backend"
-  },
-  {
-    name: "Django",
-    image: django,
-    link: "https://www.djangoproject.com/",
-    description: "Framework web de alto nivel en Python que promueve el desarrollo rápido y el diseño limpio y pragmático.",
-    category: "backend"
-  },
-  {
-    name: "FastAPI",
-    image: fastapi,
-    link: "https://fastapi.tiangolo.com/",
-    description: "Framework moderno y de alto rendimiento para construir APIs con Python basado en tipos estándar.",
-    category: "backend"
-  },
-  {
-    name: "Express",
-    image: express,
-    link: "https://expressjs.com/",
-    description: "Framework web minimalista y flexible para Node.js que facilita la creación de aplicaciones web y APIs.",
-    category: "backend"
-  },
-  
-  // Dev Tools
-  {
-    name: "Neovim",
-    image: neovim,
-    link: "https://neovim.io/",
-    description: "Editor de texto basado en Vim, extensible y enfocado en la experiencia del usuario y la compatibilidad de plugins.",
-    category: "devtools"
-  },
-  {
-    name: "Tmux",
-    image: tmux,
-    link: "https://github.com/tmux/tmux",
-    description: "Multiplexor de terminal que permite múltiples terminales virtuales en una sola ventana.",
-    category: "devtools"
-  },
-  {
-    name: "Git",
-    image: git,
-    link: "https://git-scm.com/",
-    description: "Sistema de control de versiones distribuido para rastrear cambios en el código fuente durante el desarrollo.",
-    category: "devtools"
-  },
-  {
-    name: "Docker",
-    image: docker,
-    link: "https://www.docker.com/",
-    description: "Plataforma de contenedorización que permite desarrollar, enviar y ejecutar aplicaciones en entornos aislados.",
-    category: "devtools"
-  },
-  {
-    name: "Alacritty",
-    image: alacritty,
-    link: "https://alacritty.org/",
-    description: "Emulador de terminal rápido y multiplataforma enfocado en rendimiento y simplicidad.",
-    category: "devtools"
-  },
-  {
-    name: "Ulauncher",
-    image: ulauncher,
-    link: "https://ulauncher.io/",
-    description: "Lanzador de aplicaciones para Linux que proporciona una forma rápida de buscar y lanzar aplicaciones.",
-    category: "devtools"
-  },
-  
-  // Database
-  {
-    name: "PostgreSQL",
-    image: postgres,
-    link: "https://www.postgresql.org/",
-    description: "Sistema de gestión de bases de datos relacional orientado a objetos y de código abierto.",
-    category: "database"
-  },
-  
-  // OS
-  {
-    name: "Arch Linux",
-    image: archlinux,
-    link: "https://archlinux.org/",
-    description: "Distribución Linux ligera y flexible que sigue el principio KISS (Keep It Simple, Stupid).",
-    category: "os"
-  }
 ];
 
-// Agrupar tecnologías por categoría
-const frontendTechs = technologies.filter(tech => tech.category === "frontend");
-const backendTechs = technologies.filter(tech => tech.category === "backend");
-const devTools = technologies.filter(tech => tech.category === "devtools");
-const databases = technologies.filter(tech => tech.category === "database");
-const operatingSystems = technologies.filter(tech => tech.category === "os");
-
-const categories = [
-  { label: 'Frontend',      techs: frontendTechs },
-  { label: 'Backend',       techs: backendTechs },
-  { label: 'Herramientas',  techs: devTools },
-  { label: 'Base de datos', techs: databases },
-  { label: 'Sistema',       techs: operatingSystems },
+/**
+ * Kept deliberately apart and quieter: none of this is a capability anyone
+ * buys, so it must not compete with the rows above. It stays because it is
+ * the honest answer to how the work gets done.
+ */
+const environment: Tech[] = [
+  { name: "Arch Linux", icon: icons.archlinux, link: "https://archlinux.org/" },
+  { name: "macOS", icon: icons.apple, link: "https://www.apple.com/macos/" },
+  { name: "Hyprland", icon: icons.hyprland, link: "https://hypr.land/" },
+  { name: "Kitty", icon: CAT, link: "https://sw.kovidgoyal.net/kitty/" },
+  { name: "Tmux", icon: icons.tmux, link: "https://github.com/tmux/tmux" },
+  { name: "Neovim", icon: icons.neovim, link: "https://neovim.io/" },
+  { name: "Herdr", mono: "HR", link: "https://github.com/herdrdev/herdr" },
+  { name: "Handy", mono: "HY", link: "https://handy.computer/" },
+  { name: "Whisper", mono: "W", link: "https://github.com/openai/whisper" },
 ];
+
 ---
 
 <section id="skills" class="py-12 sm:py-16 md:py-20">
   <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
-
     <div class="text-center mb-12">
       <h2 class="font-display font-extralight text-3xl md:text-4xl uppercase tracking-[0.03em] text-ink">
-        Stack & Herramientas
+        Stack &amp; Herramientas
       </h2>
     </div>
 
-    <div class="space-y-2 animate-fade-in animate-once animate-duration-700">
-      {categories.map(cat => (
-        <div class="flex flex-col sm:flex-row gap-3 sm:gap-8 items-start py-5 border-b border-brand-accent/8 last:border-0">
-          <span class="font-bold text-xs uppercase tracking-widest text-ink-muted sm:w-32 shrink-0 sm:pt-2">
-            {cat.label}
-          </span>
-          <div class="flex flex-wrap gap-2">
-            {cat.techs.map(tech => (
-              <a
-                href={tech.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="group flex items-center gap-2 bg-surface border border-brand-accent/15 hover:border-brand-accent/35 hover:bg-brand-accent/6 rounded px-3 py-2 transition-all duration-200"
-              >
-                <Image
-                  src={tech.image}
-                  alt={tech.name}
-                  width={20}
-                  height={20}
-                  class="w-5 h-5 object-contain"
-                />
-                <span class="text-sm text-ink-muted group-hover:text-ink transition-colors whitespace-nowrap">
-                  {tech.name}
-                </span>
-              </a>
+    <div class="space-y-9 animate-fade-in animate-once animate-duration-700">
+      {groups.map((group) => (
+        <div>
+          <h3 class="font-bold text-xs uppercase tracking-widest text-ink mb-3">
+            {group.headline}
+          </h3>
+          <ul class="flex flex-wrap gap-2">
+            {group.techs.map((tech) => (
+              <li>
+                <TechChip tech={tech} />
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
       ))}
-    </div>
 
+      <div class="pt-7 border-t border-brand-accent/10">
+        <h3 class="font-bold text-xs uppercase tracking-widest text-ink-muted mb-3">
+          Entorno
+        </h3>
+        <ul class="flex flex-wrap gap-2">
+          {environment.map((tech) => (
+            <li>
+              <TechChip tech={tech} muted />
+            </li>
+          ))}
+        </ul>
+      </div>
+
+    </div>
   </div>
 </section>
