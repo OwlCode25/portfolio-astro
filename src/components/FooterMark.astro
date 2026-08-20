@@ -1,0 +1,145 @@
+---
+import rawLogo from "../assets/brand/owl-logotipo.svg?raw";
+
+/**
+ * The full lockup — owl plus wordmark — inlined so its parts can be animated.
+ * Navigation renders the same file through <img>, which is fine there because
+ * nothing moves; inside an <img> the SVG's internals are unreachable.
+ */
+let svg = rawLogo
+  .replace(/<\?xml[^>]*\?>/, "")
+  // The file carries `.cls-1 { fill: #7AA2F7 }`. Inlining that would leak a
+  // generic class name into the page's global scope, so the colour comes from
+  // currentColor instead — the same contract the tech icons use.
+  .replace(/<defs>[\s\S]*?<\/defs>/, "")
+  .replace(/ class="cls-1"/g, "");
+
+/**
+ * The wordmark's seven letters are exactly the paths that begin right of the
+ * owl. Tagging them at build time means the animation can ask for "letters"
+ * instead of carrying a coordinate threshold of its own.
+ */
+const WORDMARK_STARTS_AT = 291;
+svg = svg.replace(/<path d="M(\d+(?:\.\d+)?)/g, (match, x) =>
+  parseFloat(x) >= WORDMARK_STARTS_AT ? `<path data-letter d="M${x}` : match,
+);
+
+svg = svg.replace("<svg ", '<svg data-footer-mark fill="currentColor" ');
+---
+
+<div class="flex justify-center text-brand-accent" set:html={svg} />
+
+<style>
+  div :global([data-footer-mark]) {
+    width: 92vw;
+    max-width: 1400px;
+    height: auto;
+  }
+
+  /* Without this an SVG child transforms around the viewBox origin, not its
+     own centre, so a scale or rotate throws the part across the mark. */
+  div :global([data-footer-mark] g),
+  div :global([data-footer-mark] [data-letter]) {
+    transform-box: fill-box;
+    transform-origin: 50% 50%;
+  }
+</style>
+
+<script>
+  import { animate, createTimeline, stagger, utils } from "animejs";
+
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  function parts(mark: SVGElement) {
+    return {
+      // Every named group plus the loose paths that make up the owl — i.e.
+      // everything that is not a wordmark letter.
+      owl: mark.querySelectorAll<SVGElement>(
+        "#Original-2 > g, #Original-2 > path:not([data-letter])",
+      ),
+      letters: mark.querySelectorAll<SVGElement>("[data-letter]"),
+      ring: mark.querySelector<SVGElement>("#Circulo"),
+      pupils: mark.querySelectorAll<SVGElement>("#Pupila, #Pupila-2"),
+    };
+  }
+
+  function play(mark: SVGElement) {
+    const { owl, letters, ring, pupils } = parts(mark);
+
+    const tl = createTimeline({ defaults: { ease: "outExpo" } })
+      .add(owl, { opacity: [0, 1], scale: [0.88, 1], duration: 700, delay: stagger(35) }, 0)
+      // The letters arrive left to right, the way the name is read.
+      .add(letters, { opacity: [0, 1], y: [12, 0], duration: 620, delay: stagger(45) }, 220);
+
+    if (ring) {
+      tl.add(ring, { rotate: [-75, 0], opacity: [0, 1], duration: 1400 }, 0);
+    }
+
+    // One slow blink to close, echoing the hero without repeating its whole
+    // performance. The footer is a goodbye, not a second entrance.
+    if (pupils.length) {
+      tl.add(
+        pupils,
+        {
+          // Object keyframes, not a bare [1, 0.06, 1]: anime reads a plain
+          // array as [from, to], so a third value is silently dropped and the
+          // blink never runs. BrandMark's lids use this same shape.
+          scaleY: [
+            { to: 0.06, duration: 90, ease: "inQuad" },
+            { to: 1, duration: 160, ease: "outQuad" },
+          ],
+        },
+        1500,
+      );
+    }
+
+    return tl;
+  }
+
+  function init() {
+    const mark = document.querySelector<SVGElement>("[data-footer-mark]");
+    if (!mark) return;
+
+    let timeline: ReturnType<typeof play> | null = null;
+    let observer: IntersectionObserver | null = null;
+
+    // The hidden starting state is applied from here, never from CSS: if it
+    // lived in the stylesheet, a reader with reduced motion — or with the
+    // script blocked — would get a permanently invisible mark.
+    function arm() {
+      if (timeline || observer || reduced.matches) return;
+      const { owl, letters } = parts(mark!);
+      utils.set([...owl, ...letters], { opacity: 0 });
+
+      observer = new IntersectionObserver(
+        (entries) => {
+          if (!entries.some((entry) => entry.isIntersecting)) return;
+          observer?.disconnect();
+          observer = null;
+          timeline = play(mark!);
+        },
+        { threshold: 0.4 },
+      );
+      observer.observe(mark!);
+    }
+
+    function reveal() {
+      observer?.disconnect();
+      observer = null;
+      timeline?.pause();
+      timeline = null;
+      const { owl, letters, ring, pupils } = parts(mark!);
+      utils.remove([...owl, ...letters, ...pupils, ...(ring ? [ring] : [])]);
+      utils.set([...owl, ...letters], { opacity: 1, scale: 1, y: 0 });
+      if (ring) utils.set(ring, { opacity: 1, rotate: 0 });
+      utils.set([...pupils], { scaleY: 1 });
+    }
+
+    // Both directions are handled: turning reduced motion off after load arms
+    // the entrance, turning it on mid-flight stops it and shows the mark whole.
+    reduced.addEventListener("change", () => (reduced.matches ? reveal() : arm()));
+    arm();
+  }
+
+  init();
+</script>
