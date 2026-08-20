@@ -66,8 +66,24 @@ svg = svg.replace("<svg ", '<svg data-footer-mark fill="currentColor" ');
   function play(mark: SVGElement) {
     const { owl, letters, ring, pupils } = parts(mark);
 
-    const tl = createTimeline({ defaults: { ease: "outExpo" } })
-      .add(owl, { opacity: [0, 1], scale: [0.88, 1], duration: 700, delay: stagger(35) }, 0)
+    const tl = createTimeline({
+      defaults: { ease: "outExpo" },
+      // Anime leaves its last value written inline. A transform that is not
+      // `none` keeps the subtree on the rasterised path for the rest of the
+      // page's life, so the finished mark would sit a shade softer than the
+      // text beside it.
+      onComplete: () => {
+        for (const el of [...letters, ...pupils, ...(ring ? [ring] : [])]) {
+          el.style.transform = "";
+        }
+      },
+    })
+      // Opacity only, deliberately. A CSS transform makes Chrome rasterise the
+      // SVG subtree to a texture and resample it, so a fractional scale renders
+      // soft and the landing on scale(1) re-rasterises crisp — a visible snap
+      // at the end. At 1248px wide that snap reads as the logo redrawing
+      // itself. Opacity does not touch geometry, so there is nothing to snap.
+      .add(owl, { opacity: [0, 1], duration: 700, delay: stagger(35) }, 0)
       // The letters arrive left to right, the way the name is read.
       .add(letters, { opacity: [0, 1], y: [12, 0], duration: 620, delay: stagger(45) }, 220);
 
